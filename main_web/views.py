@@ -337,7 +337,7 @@ def storing_data(request):
             for j in range(counter_list_columns):
                 str_j = str(list_all_para_turn[0][j])
                 str_value = str(list_all_para_turn[i][j])
-                dic_j['cf3:'+ str(j) + '_' + str_j + '_'] = str_value
+                dic_j['c1:'+ str(j) + '_' + str_j + '_'] = str_value
 
             table.put(str_i, dic_j)
 
