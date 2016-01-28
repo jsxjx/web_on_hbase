@@ -43,7 +43,6 @@ class HBASE_interface():
         table = connection.table(table_name)
         scan_result = table.scan(columns = family_colunm)
         ordered_columns_dict = OrderedDict(scan_result)
-        print ordered_columns_dict
         return ordered_columns_dict
 
 
