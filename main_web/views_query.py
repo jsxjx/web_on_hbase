@@ -13,11 +13,12 @@ def single_para_query(request):
         post_index = 1
 
     tablename = 'B-1527_20160125052953'
-    cf = ['c1:1328']
-    result_scan_dict = hbase_interface.query_table(tablename,cf)
+    cf_name = 'c1:1328'
+    cf_set = ['c1:1328']
+    result_scan_dict = hbase_interface.query_table(tablename,cf_set)
     result_list = []
     for key, value in result_scan_dict.items():
-        single = {'index' : key, 'value' : value["c1:1328"]}
+        single = {'index' : key, 'value' : value[cf_name]}
         result_list.append(single)
     result_json = json.dumps(result_list)
     return HttpResponse(result_json)

@@ -107,9 +107,9 @@ $(document).ready(function(){
                     data: {stencil_conf:stencil_conf,stencil_name:stencil_name,stencil_para:stencil_para,stencil_ATA:stencil_ATA},
                     url: "{% url 'ajax_single_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
-                    dataType: "html",
+                    dataType: "json",
                     beforeSend: function () {
-                        //$table.bootstrapTable('showLoading');
+                        $table.bootstrapTable('showLoading');
                         $table.bootstrapTable('load', empty_json);
                     },
                     success: function(result, statues, xml){
