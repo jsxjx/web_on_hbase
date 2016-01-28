@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'main_web.views.index', name='home'),
+    url(r'^storing_data/$', 'main_web.views.storing_data')
 ]
