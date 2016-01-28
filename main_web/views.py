@@ -209,7 +209,7 @@ def storing_data(request):
     wqar_decode = WQAR_DECODE()
     hbase_interface = HBASE_interface()
     #单位电脑路径
-    path = r'/opt/QAR_DATA/for_one_test'
+    path = r'G:\QAR_DATA\for_test_wgl'
 
     #家里电脑路径
     #path = r'F:\TDRS_DATA\WQAR_RAW_DAT'
@@ -332,12 +332,11 @@ def storing_data(request):
 
         for i in range(counter_list_all_para):
             #print u"第 %s 行"%i
-            str_i = str(i)
+            str_i = str(i).zfill(5)
             dic_j = {}
             for j in range(counter_list_columns):
-                str_j = str(list_all_para_turn[0][j])
                 str_value = str(list_all_para_turn[i][j])
-                dic_j['c1:'+ str(j) + '_' + str_j + '_'] = str_value
+                dic_j['c1:'+ str(j)] = str_value
 
             table.put(str_i, dic_j)
 

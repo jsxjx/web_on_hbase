@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block maincontents %}
+
+<div class="content-section">
+    <div class="container">
+        <div class="row">
+            <div class="page-header">
+                <h3 class="widget-title">自建模版</h3>
+            </div>
+<!--暂时取消参数样本的下载
+            <div>
+            <font face="微软雅黑" color="#000000">
+                <h4>参数列表样本：</h4>
+                <h4><a href="/static/256 参数样本.xlsx" target="_blank">点此下载256 参数样本</a></h4>
+                <h4><a href="/static/512 参数样本.xlsx" target="_blank">点此下载512 参数样本</a></h4>
+            </font>
+            </div>
+-->
+            <div class="jumbotron">
+                <form action="/stencil_name/"  role="form">
+                    <font face="微软雅黑" size="4" color="#000000">
+                    <div class=“form-group”>
+                        <div class="form-inline">
+                            <label>构型选择</label><br>
+                            <select name="configuration" id="id_stencil_conf" class="form-control">
+                                <option value="512">512</option>
+                                <option value="256">256</option>
+                            </select>
+                        </div>
+                        <div class="form-inline">
+                            <label>ATA章节（只能输入数字）</label><br>
+                            <input type="text" name="ATA" class="form-control" id="id_stencil_ATA" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                        </div>
+                        <div class="form-inline">
+                            <label>模版名称</label><br>
+                            <input type="text" name="stencil_name" id="id_stencil_name" class="form-control" />
+                        </div>
+                        <div>
+                            <label>参数列表（输入参数ID号，只能输入数字和英文逗号，两个参数间以英文逗号分割，最后一个参数不加逗号）
+                            <br>示例：1,2,3,4,5,6</label>
+                            <input type="text" name="list_para" class="form-control" id="id_stencil_para" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
+                        </div>
+                    </div>
+                    <input type="submit" value="录入" id="set" class="btn btn-default" />
+                </form>
+                <div>
+                
+                    <p>录入结果: <span id='result'></span></p>
+                </font>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+</div>
+<!--/.content-section -->
+<script>
+    $(document).ready(function(){
+      $("#set").click(function(){
+        var stencil_conf = document.querySelector('#id_stencil_conf').value;
+        var stencil_name = $("#id_stencil_name").val();
+        var stencil_ATA = $("#id_stencil_ATA").val();
+ 		var stencil_para = $("#id_stencil_para").val();
+        if (stencil_name==''||stencil_ATA==''||stencil_para==''){
+            alert("信息不完整，请输入所有信息");
+            return false;
+        }
+
+
+
+        $.ajax({
+                    type:"POST",
+                    data: {stencil_conf:stencil_conf,stencil_name:stencil_name,stencil_para:stencil_para,stencil_ATA:stencil_ATA},
+                    url: "{% url 'stencil_name' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "html",
+                    success: function(result, statues, xml){
+                        $("#result").html(result);                                         //成功时弹出view传回来的结果
+                    },
+                    error: function(){
+                        alert("录入不成功");
+                    }
+                });
+                return false;
+      });
+    });
+</script>
+
+
+{% endblock %}

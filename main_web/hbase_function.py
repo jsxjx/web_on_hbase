@@ -2,6 +2,7 @@
 
 import happybase
 import time
+from collections import OrderedDict
 
 class HBASE_interface():
 
@@ -32,12 +33,17 @@ class HBASE_interface():
         )
         print u"%s 已创建表：%s" % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())), table_name)
 
-    def delete_table(self,table_name):
+    def delete_table(self, table_name):
         connection = self.connect_hbase()
         connection.delete_table(table_name, True)
         print u"%s 已删除表：%s" % (time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())), table_name)
 
+    def query_table(self, table_name, family_colunm):
+        connection = self.connect_hbase()
+        table = connection.table(table_name)
+        scan_result = table.scan(columns = family_colunm)
+        ordered_columns_dict = OrderedDict(scan_result)
+        print ordered_columns_dict
+        return ordered_columns_dict
 
-hbase_interface = HBASE_interface()
-hbase_interface.create_table('mytable_no_COM')
-hbase_interface.delete_table('mytable_no_COM')
+
