@@ -27,7 +27,7 @@ def ajax_single_para(request):
     hbase_interface = HBASE_interface()
 
 
-    post_index = request.GET.get('stencil_name', None)
+    post_index = request.GET.get('column_index', None)
     index = post_index.encode('utf-8')
     tablename = 'B-1527_20160125052953'
     cf_str = 'c1:' + index
