@@ -327,8 +327,8 @@ def storing_data(request):
         pro_updata_Date = file[7:11] + '-' + file[11:13] + '-' + file[13:15]
         pro_updata_Time = file[15:17] + ':' + file[17:19] + ':' + file[19:21]
         dic_table_info = {'c1:Aircraft_Identification': pro_Aircraft_Identification,
-                          'c1:pro_updata_Date': pro_updata_Date,
-                          'c2:pro_updata_Time':pro_updata_Time}
+                          'c1:updata_Date': pro_updata_Date,
+                          'c1:updata_Time':pro_updata_Time}
         table_tablename_index.put(file[0:21], dic_table_info)
 
         #建立分表，并向分表中插入数据

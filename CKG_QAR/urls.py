@@ -1,3 +1,4 @@
+# coding:utf-8
 """CKG_QAR URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -20,8 +21,13 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'main_web.views.index', name='home'),
     url(r'^storing_data/$', 'main_web.views.storing_data'),
+    #索引列表
+    url(r'^table_list/$','main_web.views_query.table_list',
+        name = 'table_list'),
+    # 单参数查询
     url(r'^query_single_para_html/$','main_web.views_query.query_single_para_html',
         name = 'query_single_para_html'),
     url(r'^ajax_single_para/$', 'main_web.views_query.ajax_single_para',
         name = 'ajax_single_para')
+
 ]
