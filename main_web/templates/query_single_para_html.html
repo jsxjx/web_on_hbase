@@ -80,15 +80,25 @@ $(document).ready(function(){
                         $table.bootstrapTable('destroy');
                         var columns_set_one = {};
                         var columns_set_array = [];
-                        for(var item in para_name_list){
-                            columns_set_one={
-                                title: item,
-                                field: item,
+                        columns_set_one={
+                                title: 'index',
+                                field: 'index',
                                 align: 'center',
                                 valign: 'middle',
                                 sortable: true
                             }
-                            columns_set_array.push(columns_set_one);
+                        columns_set_array.push(columns_set_one);
+                        for(var item in para_name_list){
+                            if(item != 'index'){
+                                columns_set_one={
+                                    title: item,
+                                    field: item,
+                                    align: 'center',
+                                    valign: 'middle',
+                                    sortable: true
+                                }
+                                columns_set_array.push(columns_set_one);
+                            }
                         }
                         
                         result.shift();
