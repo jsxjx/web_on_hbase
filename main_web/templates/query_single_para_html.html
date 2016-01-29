@@ -43,30 +43,12 @@ $(function() {
                 sortable: true
             }
         ]
-
-
-    $.ajax({
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        url: '/single_para_query/',
-        dataType: "json",
-        beforeSend: function () {
-            $table.bootstrapTable({
+    $table.bootstrapTable({
                 data: empty_json,
                 columns: columns_set,
                 search: true
             });
-            $table.bootstrapTable('showLoading');
-        },
-
-
-        success: function(result, statues, xml){
-            $table.bootstrapTable('hideLoading');
-            $table.bootstrapTable('load', result);
-
-            }
-        });
-
+    
 });
 
 
