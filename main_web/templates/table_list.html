@@ -27,7 +27,7 @@ $(function() {
                 sortable: true
             },
             {
-                title: 'value',
+                title: 'AI_number',
                 field: 'Aircraft_Identification',
                 align: 'center',
                 valign: 'middle',
@@ -35,17 +35,25 @@ $(function() {
             },
             {
                 title: 'updata_Date',
-                field: 'pro_updata_Date',
+                field: 'updata_Date',
                 align: 'center',
                 valign: 'middle',
                 sortable: true
             },
             {
                 title: 'updata_Time',
-                field: 'pro_updata_Time',
+                field: 'updata_Time',
                 align: 'center',
                 valign: 'middle',
                 sortable: true
+            },
+            {
+                title: '进入链接',
+                field: 'index',
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: flightFormatter
             }
         ]
     $table.bootstrapTable({
@@ -55,6 +63,16 @@ $(function() {
             });
     
 });
+
+function flightFormatter(value) {
+
+    var the_url;
+
+    the_url = "{% url 'table_index' 112233 %}".replace("112233", value);
+    return [
+        '<a href="' + the_url + '" target="_blank">' + "进入" + '</a>'
+    ].join('');
+}
 
 </script>
 

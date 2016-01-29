@@ -24,6 +24,7 @@ urlpatterns = [
     #索引列表
     url(r'^table_list/$','main_web.views_query.table_list',
         name = 'table_list'),
+    url(r'^table_index/(.+)/$', 'main_web.views_query.table_index', name = 'table_index'),
     # 单参数查询
     url(r'^query_single_para_html/$','main_web.views_query.query_single_para_html',
         name = 'query_single_para_html'),

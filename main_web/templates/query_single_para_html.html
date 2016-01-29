@@ -21,8 +21,8 @@
 </div>
 <!--/.content-section -->
 <script>
-
-
+var list_flight_id = {{ json_list | safe}};
+var flight_id = list_flight_id[0];
 var $table = $('#table');
 var empty_json = {}
 $(function() {
@@ -48,7 +48,7 @@ $(function() {
                 columns: columns_set,
                 search: true
             });
-    
+
 });
 
 
@@ -64,7 +64,9 @@ $(document).ready(function(){
 
         $.ajax({
                     type:"GET",
-                    data: {column_index:column_index},
+                    data: {column_index:column_index, 
+                        flight_id:flight_id,
+                    },
                     url: "{% url 'ajax_single_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
                     dataType: "json",
@@ -74,34 +76,31 @@ $(document).ready(function(){
                     },
                     success: function(result, statues, xml){
                         $table.bootstrapTable('hideLoading');
-                        para_name = result[0].value;
+                        para_name_list = result[0];
                         $table.bootstrapTable('destroy');
-                        columns_set = [
-                            {
-                                title: 'index',
-                                field: 'index',
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true
-                            },
-                            {
-                                title: para_name,
-                                field: 'value',
+                        var columns_set_one = {};
+                        var columns_set_array = [];
+                        for(var item in para_name_list){
+                            columns_set_one={
+                                title: item,
+                                field: item,
                                 align: 'center',
                                 valign: 'middle',
                                 sortable: true
                             }
-                        ]
+                            columns_set_array.push(columns_set_one);
+                        }
+                        
                         result.shift();
                         $table.bootstrapTable({
                             data: result,
-                            columns: columns_set,
+                            columns: columns_set_array,
                             search: true
                         });
                         //成功时弹出view传回来的结果
                     },
                     error: function(){
-                        alert("录入不成功");
+                        alert("查询失败");
                     }
                 });
                 return false;
