@@ -317,10 +317,21 @@ def storing_data(request):
                         list_all_para.append(list_single_para)
 
 
-
-        #简单输出结果到csv
         list_all_para_turn = map(list, zip(*list_all_para))
 
+
+
+        # 向索引表中插入数据分表的表头信息
+        table_tablename_index = connection.table("tablename_index")
+        pro_Aircraft_Identification = file[0:6]
+        pro_updata_Date = file[7:11] + '-' + file[11:13] + '-' + file[13:15]
+        pro_updata_Time = file[15:17] + ':' + file[17:19] + ':' + file[19:21]
+        dic_table_info = {'c1:Aircraft_Identification': pro_Aircraft_Identification,
+                          'c1:pro_updata_Date': pro_updata_Date,
+                          'c2:pro_updata_Time':pro_updata_Time}
+        table_tablename_index.put(file[0:21], dic_table_info)
+
+        #建立分表，并向分表中插入数据
         hbase_interface.create_table(file[0:21])
         table = connection.table(file[0:21])
         print table
