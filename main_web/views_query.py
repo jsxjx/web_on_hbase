@@ -34,7 +34,6 @@ def ajax_single_para(request):
     result_scan_dict = hbase_interface.query_table(tablename,cf_set)
     result_list = []
     para_name_dic = result_scan_dict['00000']
-    print para_name_dic.items()
     for key, value in result_scan_dict.items():
         single = {'index' : key}
         for key_para, value_para in value.items():
