@@ -2,32 +2,48 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from hbase_function import HBASE_interface
+from hbase_function import LIST_to_STR
+from aircraft_config import AC_WQAR_CONFIG
 import json
 
 def ajax_single_para(request):
     hbase_interface = HBASE_interface()
-    post_index = request.GET.get('column_index', None)
+    list_str = LIST_to_STR()
+    post_index = request.GET.get('value_conf', None)
+    print post_index
     post_flight_id = request.GET.get('flight_id', None)
-    # 机号构型判断
-    WQAR512_SERISE_list = ["B-1976","B-1956","B-5803","B-5679","B-1527","B-1738","B-5622","B-1942","B-1959",\
-                           "B-5682","B-5297","B-5296","B-5583","B-1768","B-1765","B-1763","B-5582","B-1531","B-6496"]
 
-    WQAR256_SERISE_list = ["B-2612","B-2613","B-2700","B-5201","B-5202","B-5203","B-5214","B-5217","B-5220",\
-                           "B-5325","B-5327","B-5329","B-5390","B-5392","B-5398","B-5426","B-5443","B-5477",\
-                           "B-5486","B-5496","B-5198","B-2649"]
     WQAR256_FUEL_MODEL = [65, 89, 90, 91, 214, 216, 224, 225, 232, 233, 234, 433, 434]
     WQAR512_FUEL_MODEL = [69, 96, 97, 98, 241, 242, 249, 250, 363, 364, 365, 394, 395]
     aircraft_id = post_flight_id[0:6]
-    if aircraft_id in WQAR512_SERISE_list:
-        model = WQAR512_FUEL_MODEL
-    elif aircraft_id in WQAR256_SERISE_list:
-        model = WQAR256_FUEL_MODEL
+    # 读取模版表的存储详情
+    table_stencil_name = "stencil_config"
+    cf_set_stencil = ['c1:WQAR512_IDC',
+                      'c1:WQAR256_IDC',
+                      'c1:NAME']
+    result_scan_dict = hbase_interface.query_table(table_stencil_name,cf_set_stencil)
+
+    dict_stencil_config = result_scan_dict[post_index]
+    str_WQAR256 = dict_stencil_config['c1:WQAR256_IDC']
+    str_WQAR512 = dict_stencil_config['c1:WQAR512_IDC']
+    list_WQAR256 = list_str.str_to_int(str_WQAR256)
+    list_WQAR512 = list_str.str_to_int(str_WQAR512)
+
+    # 机号构型判断
+    ac_wqar_config = AC_WQAR_CONFIG()
+    if aircraft_id in ac_wqar_config.WQAR512_SERISE_list:
+        model = list_WQAR512
+    elif aircraft_id in ac_wqar_config.WQAR256_SERISE_list:
+        model = list_WQAR256
     else:
         return HttpResponse("无此机号")
 
     index = post_index.encode('utf-8')
     tablename = post_flight_id
     cf_set = []
+    # 存储的模版列号转成列表时，要将值减一
+    for item in model:
+        item = item -1
     for item in model:
         cf_set.append('c1:' + str(item))
 
@@ -43,8 +59,6 @@ def ajax_single_para(request):
     result_json = json.dumps(result_list)
     return HttpResponse(result_json)
 
-def query_single_para_html(request):
-    return render(request, 'query_single_para_html.html')
 
 def table_list(request):
     hbase_interface = HBASE_interface()
@@ -66,4 +80,19 @@ def table_list(request):
 def table_index(request, flight_id):
     list = [flight_id]
     json_list = json.dumps(list)
-    return render(request, 'query_single_para_html.html', {'json_list': json_list})
+
+    hbase_interface = HBASE_interface()
+    table_name = "stencil_config"
+    cf_set = ['c1:WQAR512_IDC',
+              'c1:WQAR256_IDC',
+              'c1:NAME']
+    result_scan_dict = hbase_interface.query_table(table_name, cf_set)
+    result_list = []
+    for key, value in result_scan_dict.items():
+        single = {'index' : key,
+                  'NAME' : value['c1:NAME']
+                  }
+        result_list.append(single)
+
+    return render(request, 'query_single_para_html.html', {'json_list': json_list,
+                                                           'stencil_option': result_list})

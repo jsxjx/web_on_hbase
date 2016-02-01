@@ -7,8 +7,12 @@
 
             <div class=“form-group”>
                 <div class="form-inline">
-                    <label>参数序号（只能输入数字）</label><br>
-                    <input type="text" name="column_index" class="form-control" id="id_colunm_index" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
+                    <label>模版选择</label><br>
+                    <select name="configuration" id="id_conf" class="form-control">
+                        {% for option_dict in stencil_option %}
+                            <option value= {{ option_dict.index}}>{{ option_dict.NAME }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <input type="submit" value="查询" id="set" class="btn btn-default" />
@@ -55,6 +59,7 @@ $(function() {
 $(document).ready(function(){
       $("#set").click(function(){
         var column_index = $("#id_colunm_index").val();
+        var value_conf = document.querySelector('#id_conf').value
         if (column_index==''){
             alert("信息不完整，请输入所有信息");
             return false;
@@ -64,7 +69,8 @@ $(document).ready(function(){
 
         $.ajax({
                     type:"GET",
-                    data: {column_index:column_index, 
+                    data: {
+                        value_conf:value_conf, 
                         flight_id:flight_id,
                     },
                     url: "{% url 'ajax_single_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
@@ -80,6 +86,7 @@ $(document).ready(function(){
                         $table.bootstrapTable('destroy');
                         var columns_set_one = {};
                         var columns_set_array = [];
+                        //将index放在首列
                         columns_set_one={
                                 title: 'index',
                                 field: 'index',

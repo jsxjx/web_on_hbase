@@ -25,9 +25,7 @@ urlpatterns = [
     url(r'^table_list/$','main_web.views_query.table_list',
         name = 'table_list'),
     url(r'^table_index/(.+)/$', 'main_web.views_query.table_index', name = 'table_index'),
-    # 单参数查询
-    url(r'^query_single_para_html/$','main_web.views_query.query_single_para_html',
-        name = 'query_single_para_html'),
+    # 参数查询ajxa 模块
     url(r'^ajax_single_para/$', 'main_web.views_query.ajax_single_para',
         name = 'ajax_single_para')
 

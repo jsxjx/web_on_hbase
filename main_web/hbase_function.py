@@ -44,3 +44,28 @@ class HBASE_interface():
         scan_result = table.scan(columns = family_colunm)
         ordered_columns_dict = OrderedDict(scan_result)
         return ordered_columns_dict
+
+
+class LIST_to_STR():
+
+    def __init__(self):
+        pass
+
+    def int_to_str(self, original_list):
+        list_int_to_str = []
+        for item in original_list:
+            list_int_to_str.append(str(item))
+        sep = ','
+        str_list = sep.join(list_int_to_str)
+        print u"列表转换成逗号分割的字符串：" + str_list
+        return str_list
+
+    def str_to_int(self, original_str):
+        sep = ','
+        list_original = original_str.split(sep)
+        list_str_to_int = []
+        for item in list_original:
+            list_str_to_int.append(int(item))
+        print u"逗号分割的字符串转换成列表："
+        print list_str_to_int
+        return list_str_to_int
