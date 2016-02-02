@@ -12,9 +12,6 @@ def ajax_single_para(request):
     post_index = request.GET.get('value_conf', None)
     print post_index
     post_flight_id = request.GET.get('flight_id', None)
-
-    WQAR256_FUEL_MODEL = [65, 89, 90, 91, 214, 216, 224, 225, 232, 233, 234, 433, 434]
-    WQAR512_FUEL_MODEL = [69, 96, 97, 98, 241, 242, 249, 250, 363, 364, 365, 394, 395]
     aircraft_id = post_flight_id[0:6]
     # 读取模版表的存储详情
     table_stencil_name = "stencil_config"
@@ -38,7 +35,6 @@ def ajax_single_para(request):
     else:
         return HttpResponse("无此机号")
 
-    index = post_index.encode('utf-8')
     tablename = post_flight_id
     cf_set = []
     # 存储的模版列号转成列表时，要将值减一
@@ -46,6 +42,7 @@ def ajax_single_para(request):
         item = item -1
     for item in model:
         cf_set.append('c1:' + str(item))
+
 
     result_scan_dict = hbase_interface.query_table(tablename,cf_set)
     result_list = []
@@ -55,8 +52,24 @@ def ajax_single_para(request):
         for key_para, value_para in value.items():
             para_name = para_name_dic[key_para]
             single[para_name] = value_para
+
         result_list.append(single)
-    result_json = json.dumps(result_list)
+
+    #查询出C2的值
+    cf_set_c2 = ['c2:1']
+    dict_c2_scan = hbase_interface.query_table(tablename,cf_set_c2)
+    dict_c2_para_name = dict_c2_scan['00000']
+    list_c1_c2 = []
+    i = 0
+    for key, value in dict_c2_scan.items():
+        single = result_list[i]
+        for key_para, value_para in value.items():
+            para_name = dict_c2_para_name[key_para]
+            single[para_name] = value_para
+        list_c1_c2.append(single)
+        i = i + 1
+
+    result_json = json.dumps(list_c1_c2)
     return HttpResponse(result_json)
 
 
