@@ -342,13 +342,13 @@ def storing_data(request):
         counter_list_columns = len(list_all_para_turn[0])
 
         # 按python list 标号从零开始改为从一开始，以符合数据库设计
-        counter_list_increse_1 = counter_list_all_para + 1
-        for i in range(1, counter_list_increse_1):
+        counter_list_columns_app_1 = counter_list_columns + 1
+        for i in range(1, counter_list_all_para):
             #print u"第 %s 行"%i
             str_i = str(i).zfill(5)
             dic_j = {}
-            for j in range(counter_list_columns):
-                str_value = str(list_all_para_turn[i][j])
+            for j in range(1, counter_list_columns_app_1):
+                str_value = str(list_all_para_turn[i][j-1]) #对应在list中的下标要减一
                 dic_j['c1:'+ str(j)] = str_value
 
             table.put(str_i, dic_j)
