@@ -37,9 +37,7 @@ def ajax_single_para(request):
 
     tablename = post_flight_id
     cf_set = []
-    # 存储的模版列号转成列表时，要将值减一
-    for item in model:
-        item = item -1
+
     for item in model:
         cf_set.append('c1:' + str(item))
 

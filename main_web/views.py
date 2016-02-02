@@ -341,7 +341,9 @@ def storing_data(request):
         counter_list_all_para = len(list_all_para_turn)
         counter_list_columns = len(list_all_para_turn[0])
 
-        for i in range(counter_list_all_para):
+        # 按python list 标号从零开始改为从一开始，以符合数据库设计
+        counter_list_increse_1 = counter_list_all_para + 1
+        for i in range(1, counter_list_increse_1):
             #print u"第 %s 行"%i
             str_i = str(i).zfill(5)
             dic_j = {}
