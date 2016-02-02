@@ -343,7 +343,7 @@ def storing_data(request):
 
         # 按python list 标号从零开始改为从一开始，以符合数据库设计
         counter_list_columns_app_1 = counter_list_columns + 1
-        for i in range(1, counter_list_all_para):
+        for i in range(0, counter_list_all_para):
             #print u"第 %s 行"%i
             str_i = str(i).zfill(5)
             dic_j = {}
