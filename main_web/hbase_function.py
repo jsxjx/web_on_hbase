@@ -21,6 +21,11 @@ class HBASE_interface():
         return connection
         #print connection.tables()
 
+    def table(self, table_name):
+        connection = self.connect_hbase
+        table = connection.table(table_name)
+        return table
+
     # 开始创建数据表
     def create_table(self, table_name):
         connection = self.connect_hbase
@@ -45,6 +50,21 @@ class HBASE_interface():
         ordered_columns_dict = OrderedDict(scan_result)
         return ordered_columns_dict
 
+    def list_query_tablenames(self):
+        table_name = 'tablename_index'
+        table = self.table(table_name)
+        list_table_name = []
+        for key, value in table.scan():
+            list_table_name.append(key)
+        return list_table_name
+
+    def list_make_columns_family(self, str_cf_name, list_model):
+        list_result = []
+        for item in list_model:
+            list_result.append(str_cf_name + ':' + str(item))
+        return list_result
+
+
 
 class LIST_to_STR():
 
@@ -62,10 +82,7 @@ class LIST_to_STR():
 
     def str_to_int(self, original_str):
         sep = ','
-        list_original = original_str.split(sep)
-        list_str_to_int = []
-        for item in list_original:
-            list_str_to_int.append(int(item))
+        list_str_to_list = original_str.split(sep)
         print u"逗号分割的字符串转换成列表："
-        print list_str_to_int
-        return list_str_to_int
+        print list_str_to_list
+        return list_str_to_list

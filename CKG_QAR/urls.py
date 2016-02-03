@@ -20,6 +20,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'main_web.views.index', name='home'),
+    url(r'^home/$', 'main_web.views.index', name='home'),
     url(r'^storing_data/$', 'main_web.views.storing_data'),
     #索引列表
     url(r'^table_list/$','main_web.views_query.table_list',
@@ -27,6 +28,11 @@ urlpatterns = [
     url(r'^table_index/(.+)/$', 'main_web.views_query.table_index', name = 'table_index'),
     # 参数查询ajxa 模块
     url(r'^ajax_single_para/$', 'main_web.views_query.ajax_single_para',
-        name = 'ajax_single_para')
+        name = 'ajax_single_para'),
+    # 模版存储
+    url(r'^storing_stencil/$', 'main_web.views_stencil.storing_stencil'),
+    url(r'^storing_stencil_ajax/$',
+        'main_web.views_stencil.storing_stencil_ajax',
+        name = 'storing_stencil_ajax'),
 
 ]
