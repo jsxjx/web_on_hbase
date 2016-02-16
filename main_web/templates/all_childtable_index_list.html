@@ -68,7 +68,7 @@ function flightFormatter(value) {
 
     var the_url;
 
-    the_url = "{% url 'table_index' 112233 %}".replace("112233", value);
+    the_url = "{% url 'childtable' 112233 %}".replace("112233", value);
     return [
         '<a href="' + the_url + '" target="_blank">' + "进入" + '</a>'
     ].join('');

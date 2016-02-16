@@ -3,8 +3,7 @@
 <div class="content-section">
     <div class="container">
         <h2>请选择参数模版：</h2>
-        <form action="/ajax_single_para/"  role="form">
-
+        <form action="/ajax_some_para/"  role="form">
             <div class=“form-group”>
                 <div class="form-inline">
                     <label>模版选择</label><br>
@@ -73,7 +72,7 @@ $(document).ready(function(){
                         value_conf:value_conf, 
                         flight_id:flight_id,
                     },
-                    url: "{% url 'ajax_single_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    url: "{% url 'ajax_some_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
                     dataType: "json",
                     beforeSend: function () {

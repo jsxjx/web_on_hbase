@@ -19,16 +19,18 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'main_web.views.index', name='home'),
-    url(r'^home/$', 'main_web.views.index', name='home'),
+    #主页，首页
+    url(r'^$', 'main_web.views.home', name='home'),
+    url(r'^home/$', 'main_web.views.home', name='home'),
+    #译码存储
     url(r'^storing_data/$', 'main_web.views.storing_data'),
-    #索引列表
-    url(r'^table_list/$','main_web.views_query.table_list',
-        name = 'table_list'),
-    url(r'^table_index/(.+)/$', 'main_web.views_query.table_index', name = 'table_index'),
+    #查询页面
+    url(r'^all_childtable_index_list/$','main_web.views_query.all_childtable_index_list',
+        name = 'all_childtable_index_list'),
+    url(r'^childtable/(.+)/$', 'main_web.views_query.childtable', name = 'childtable'),
     # 参数查询ajxa 模块
-    url(r'^ajax_single_para/$', 'main_web.views_query.ajax_single_para',
-        name = 'ajax_single_para'),
+    url(r'^ajax_some_para/$', 'main_web.views_query.ajax_some_para',
+        name = 'ajax_some_para'),
     # 模版存储
     url(r'^storing_stencil/$', 'main_web.views_stencil.storing_stencil'),
     url(r'^storing_stencil_ajax/$',

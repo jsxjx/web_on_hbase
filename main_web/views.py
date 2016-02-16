@@ -194,8 +194,8 @@ from multiprocessing import Pool
 
 
 # Create your views here.
-def index(request):
-    return render(request, 'index.html')
+def home(request):
+    return render(request, 'home.html')
 
 def storing_data(request):
 
