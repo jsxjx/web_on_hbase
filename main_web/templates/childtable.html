@@ -82,7 +82,11 @@ $(document).ready(function(){
             success: function(result, statues, xml){
                 $table.bootstrapTable('hideLoading');
                 para_name_list = result[0];
+                console.log(para_name_list)
+                para_unit_dic = result[result.length - 1]
+                console.log(para_unit_dic)
                 $table.bootstrapTable('destroy');
+                
                 var columns_set_one = {};
                 var columns_set_array = [];
                 //将index放在首列
@@ -115,11 +119,47 @@ $(document).ready(function(){
                         columns_set_array.push(columns_set_one);
                     }
                 }
-                //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。
+                
+                //生成表头第二列的单位
+                var columns_set_units_one = {};
+                var columns_set_units_array = [];
+                //将index放在首列
+                columns_set_units_one={
+                        field: 'index',
+                        title: 'UNITS',
+                        align: 'center',
+                        valign: 'middle',
+                    }
+                columns_set_units_array.push(columns_set_units_one);
+                //将GMT_TIME放入第二列
+                columns_set_units_two = {
+                    field: '$GMT TIME',
+                    title: 'HH:MM:SS',
+                    align: 'center',
+                    valign: 'middle',
+                }
+                columns_set_units_array.push(columns_set_units_two);
+                for(var item in para_unit_dic){
+                    if(item != 'index' && item != '$GMT TIME'){
+                        columns_set_units_one={
+                            field: item,
+                            title: para_unit_dic[item],
+                            align: 'center',
+                            valign: 'middle',
+                        }
+                        columns_set_units_array.push(columns_set_units_one);
+                    }
+                }
+                console.log(columns_set_array);
+                console.log(columns_set_units_array);
+                var columns_set_merge = new Array();
+                columns_set_merge = [columns_set_array, columns_set_units_array];
+                //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。pop()删除最后一个元素。
                 result.shift();
+                result.pop();
                 $table.bootstrapTable({
                     data: result,
-                    columns: columns_set_array,
+                    columns: columns_set_merge,
                     search: true
                 });
                 //成功时弹出view传回来的结果
