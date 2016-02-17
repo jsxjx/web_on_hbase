@@ -19,6 +19,7 @@ def storing_data(request):
     #测试路径
     dir_path = r'G:\QAR_DATA\append_upload'
     decode_list.all_decode_list(dir_path, save_decode_list_to_hbase)
+    #decode_list.all_decode_list(dir_path, decode_list.save_to_csv)
 
     allendtime = time.clock()
     print u"全参数译码总耗时：%s" % (allendtime - allstarttime)

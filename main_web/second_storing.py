@@ -41,10 +41,10 @@ class Second_Storing:
         cf_set = hb_if.list_make_columns_family('c1', model)
         table = hb_if.table(table_name)
         result_scan_dict = hb_if.query_table(table_name,cf_set)
-        print result_scan_dict
+        #print result_scan_dict
         result_list = []
         para_name_dic = result_scan_dict['00000']
-        print para_name_dic
+        #print para_name_dic
         GMT_time = ''
         list_GMT_time = []
         for key, value in result_scan_dict.items():
@@ -52,6 +52,11 @@ class Second_Storing:
             if key == "00000":
                 list_GMT_time.append('$GMT TIME')
                 table.put(key, {'c2:1': '$GMT TIME'})
+                continue
+            #时间单位的列表
+            if key == "UNITS":
+                print value
+                table.put(key, {'c2:1': 'HH:MM:SS'})
                 continue
             if value[cf_set[0]] == '':
                 list_GMT_time.append(GMT_time)
@@ -67,10 +72,10 @@ class Second_Storing:
 
 
 
-
+'''
 second_storing = Second_Storing()
 second_storing.merge_GMT_time()
-
+'''
 
 
 

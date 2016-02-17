@@ -37,7 +37,13 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
     counter_list_columns_app_1 = counter_list_columns + 1
     for i in range(0, counter_list_all_para):
         #print u"第 %s 行"%i
-        str_i = str(i).zfill(5)
+
+        if i == 0:
+            str_i = str(i).zfill(5)
+        elif i == 1:
+            str_i = 'UNITS'
+        else:
+            str_i = str(i - 1).zfill(5)
         dic_j = {}
         for j in range(1, counter_list_columns_app_1):
             str_value = str(list_all_para_turn[i][j-1]) #对应在list中的下标要减一

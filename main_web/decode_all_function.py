@@ -189,11 +189,20 @@ class MERGE_DECODE_LIST():
         #读取csv逻辑参数列表，解码大量逻辑参数
         f = open(csv_file_name,'rb')
         reader = csv.reader(f)
+        #对参数ID号统一排序
+        if num_logic == "logic":
+            if plane_config == 256 :
+                para_id_number = 645
+            else:
+                para_id_number = 797
+        else:
+            para_id_number = 1
+
         for row in reader:
             if reader.line_num == 1:
                 continue
             #读取csv参数列表，解码数值参数
-            if num_logic == "number":
+            if num_logic == 'number':
                 list_single_para = wqar_decode.frame(plane_config, filedata,
                                                  ICD_MSB=int(row[2]),
                                                  ICD_LSB=int(row[3]),
@@ -202,9 +211,9 @@ class MERGE_DECODE_LIST():
                                                  ICD_SUPF=int(row[6]),
                                                  ICD_RES=float(row[9]),
                                                 ICD_SIGN=row[1])
-
+                list_single_para.insert(0, row[7])
             #读取csv参数列表，解码逻辑值值参数
-            elif num_logic == "logic":
+            elif num_logic == 'logic':
                 list_single_para = wqar_decode.frame_logic(plane_config, filedata,
                                                         ICD_MSB = int(row[1]),
                                                         ICD_LSB = int(row[2]),
@@ -213,11 +222,11 @@ class MERGE_DECODE_LIST():
                                                         ICD_SUPF = int(row[5]),
                                                         ICD_ONE_LOGIC = row[6],
                                                         ICD_ZERO_LOGIC = row[7])
-            para_id_number = reader.line_num - 1
+                list_single_para.insert(0, '')
             para_name = str(para_id_number) + ':' + row[0]
             list_single_para.insert(0, para_name)
             list_all_para.append(list_single_para)
-
+            para_id_number = para_id_number + 1
         return list_all_para
 
 

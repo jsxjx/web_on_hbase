@@ -67,68 +67,68 @@ $(document).ready(function(){
 
 
         $.ajax({
-                    type:"GET",
-                    data: {
-                        value_conf:value_conf, 
-                        flight_id:flight_id,
-                    },
-                    url: "{% url 'ajax_some_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "json",
-                    beforeSend: function () {
-                        $table.bootstrapTable('showLoading');
-                        $table.bootstrapTable('load', empty_json);
-                    },
-                    success: function(result, statues, xml){
-                        $table.bootstrapTable('hideLoading');
-                        para_name_list = result[0];
-                        $table.bootstrapTable('destroy');
-                        var columns_set_one = {};
-                        var columns_set_array = [];
-                        //将index放在首列
+            type:"GET",
+            data: {
+                value_conf:value_conf, 
+                flight_id:flight_id,
+            },
+            url: "{% url 'ajax_some_para' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+            cache: false,
+            dataType: "json",
+            beforeSend: function () {
+                $table.bootstrapTable('showLoading');
+                $table.bootstrapTable('load', empty_json);
+            },
+            success: function(result, statues, xml){
+                $table.bootstrapTable('hideLoading');
+                para_name_list = result[0];
+                $table.bootstrapTable('destroy');
+                var columns_set_one = {};
+                var columns_set_array = [];
+                //将index放在首列
+                columns_set_one={
+                        title: 'index',
+                        field: 'index',
+                        align: 'center',
+                        valign: 'middle',
+                        sortable: true
+                    }
+                columns_set_array.push(columns_set_one);
+                //将GMT_TIME放入第二列
+                columns_set_two = {
+                    title: '$GMT TIME',
+                    field: '$GMT TIME',
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true
+                }
+                columns_set_array.push(columns_set_two);
+                for(var item in para_name_list){
+                    if(item != 'index' && item != '$GMT TIME'){
                         columns_set_one={
-                                title: 'index',
-                                field: 'index',
-                                align: 'center',
-                                valign: 'middle',
-                                sortable: true
-                            }
-                        columns_set_array.push(columns_set_one);
-                        //将GMT_TIME放入第二列
-                        columns_set_two = {
-                            title: '$GMT TIME',
-                            field: '$GMT TIME',
+                            title: item,
+                            field: item,
                             align: 'center',
                             valign: 'middle',
                             sortable: true
                         }
-                        columns_set_array.push(columns_set_two);
-                        for(var item in para_name_list){
-                            if(item != 'index' && item != '$GMT TIME'){
-                                columns_set_one={
-                                    title: item,
-                                    field: item,
-                                    align: 'center',
-                                    valign: 'middle',
-                                    sortable: true
-                                }
-                                columns_set_array.push(columns_set_one);
-                            }
-                        }
-                        
-                        result.shift();
-                        $table.bootstrapTable({
-                            data: result,
-                            columns: columns_set_array,
-                            search: true
-                        });
-                        //成功时弹出view传回来的结果
-                    },
-                    error: function(){
-                        alert("查询失败");
+                        columns_set_array.push(columns_set_one);
                     }
+                }
+                //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。
+                result.shift();
+                $table.bootstrapTable({
+                    data: result,
+                    columns: columns_set_array,
+                    search: true
                 });
-                return false;
+                //成功时弹出view传回来的结果
+            },
+            error: function(){
+                alert("查询失败");
+            }
+        });
+        return false;
       });
     });
 
