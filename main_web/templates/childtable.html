@@ -129,6 +129,7 @@ $(document).ready(function(){
                         title: 'UNITS',
                         align: 'center',
                         valign: 'middle',
+                        sortable: true
                     }
                 columns_set_units_array.push(columns_set_units_one);
                 //将GMT_TIME放入第二列
@@ -137,6 +138,7 @@ $(document).ready(function(){
                     title: 'HH:MM:SS',
                     align: 'center',
                     valign: 'middle',
+                    sortable: true
                 }
                 columns_set_units_array.push(columns_set_units_two);
                 for(var item in para_unit_dic){
@@ -146,6 +148,7 @@ $(document).ready(function(){
                             title: para_unit_dic[item],
                             align: 'center',
                             valign: 'middle',
+                            sortable: true
                         }
                         columns_set_units_array.push(columns_set_units_one);
                     }
