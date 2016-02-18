@@ -16,6 +16,9 @@
             </div>
             <input type="submit" value="查询" id="set" class="btn btn-default" />
         </form>
+        <div id="main1" style="height:300px"></div>
+        <div id="main2" style="height:200px"></div>
+        <div id="main3" style="height:200px"></div>
         <table id="table" data-sort-name="stargazers_count" data-sort-order="desc" data-pagination="true" data-page-size="15" data-page-list="[15,30,66,100]" data-show-pagination-switch="true">
 
         </table>
@@ -23,11 +26,13 @@
     <!-- /container -->
 </div>
 <!--/.content-section -->
+<script src="/static/echarts_3.0.2/echarts.min.js"></script>
 <script>
 var list_flight_id = {{ json_list | safe}};
 var flight_id = list_flight_id[0];
 var $table = $('#table');
-var empty_json = {}
+var empty_json = {};
+
 $(function() {
 
     columns_set = [
@@ -81,10 +86,8 @@ $(document).ready(function(){
             },
             success: function(result, statues, xml){
                 $table.bootstrapTable('hideLoading');
-                para_name_list = result[0];
-                console.log(para_name_list)
-                para_unit_dic = result[result.length - 1]
-                console.log(para_unit_dic)
+                para_name_list = result[0];                
+                para_unit_dic = result[result.length - 1]                
                 $table.bootstrapTable('destroy');
                 
                 var columns_set_one = {};
@@ -153,8 +156,7 @@ $(document).ready(function(){
                         columns_set_units_array.push(columns_set_units_one);
                     }
                 }
-                console.log(columns_set_array);
-                console.log(columns_set_units_array);
+                
                 var columns_set_merge = new Array();
                 columns_set_merge = [columns_set_array, columns_set_units_array];
                 //shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。pop()删除最后一个元素。
@@ -165,15 +167,202 @@ $(document).ready(function(){
                     columns: columns_set_merge,
                     search: true
                 });
-                //成功时弹出view传回来的结果
+                
+
+
+                //对echarts进行设置
+                var data_para_time = new Array();
+                var data_BARO_1 = new Array();
+                var data_LT_MAIN_FUEL = new Array();
+                var data_RT_MAIN_FUEL = new Array();
+                var data_CENTER_MAIN_FUEL = new Array();
+                var data_diff_value = new Array();
+                var data_FF_1 = new Array();
+                var data_FF_2 = new Array();
+
+                //固定部分，时间的配置，还有母板的基础设置
+                var post_data = result;
+                for(var i=0;i<post_data.length;i++){
+                    data_para_time.push(post_data[i]["$GMT TIME"]);            
+                }
+                var axisDATA = data_para_time;
+                var option_base = new Object();
+                option_base =
+                {
+                    animation:false,
+                    tooltip: {
+                        trigger: 'axis',
+                        show: true,
+                    },                    
+                    dataZoom:{
+                        type: 'slider',
+                        realtime:false,
+                        orient:'horizontal',
+                        start: 0,
+                        end: 100
+                    },
+                    xAxis : {
+                        type : 'category',
+                        data : axisDATA,
+                        name : "HH:MM:SS"
+                    },
+                    yAxis : {
+                            type : 'value'
+                    },
+                    legend: {
+                            data:[]
+                    },
+                    series : []  
+                };
+
+
+                //动态部分，对每张图表的配置
+                for(var i=0;i<post_data.length;i++){
+                    data_BARO_1.push(post_data[i]["69:BARO COR ALT NO. 1"]);
+                    data_CENTER_MAIN_FUEL.push(post_data[i]["365:CENTER MAIN FUEL QTY"]);
+                    data_LT_MAIN_FUEL.push(post_data[i]["363:LT MAIN FUEL QTY"]);
+                    data_RT_MAIN_FUEL.push(post_data[i]["364:RT MAIN FUEL QTY"]);
+                    
+                    //data_diff_value.push(post_data[i].RT_LT);
+                    data_FF_1.push(post_data[i]["250:SELECTED FUEL FLOW #1"]);
+                    data_FF_2.push(post_data[i]["249:SELECTED FUEL FLOW #2"]);
+                };
+                
+                console.log(data_CENTER_MAIN_FUEL);
+
+                var option1 = {};
+                option1 = clone(option_base);
+                console.log(option1)
+                option1["dataZoom"]["show"] = true;
+                option1["yAxis"]["name"] = "LBS";
+                option1["legend"]["data"] = ['LT_MAIN_FUEL','RT_MAIN_FUEL','CENTER_MAIN_FUEL'];
+                option1["series"][0] = {
+                    "name":"LT_MAIN_FUEL",
+                    "type":"scatter",
+                    "data":data_LT_MAIN_FUEL,
+                };
+                option1["series"][1] = {
+                    "name":"RT_MAIN_FUEL",
+                    "type":"scatter",
+                    "data":data_RT_MAIN_FUEL,
+                };
+                option1["series"][2] = {
+                    "name":"CENTER_MAIN_FUEL",
+                    "type":"scatter",
+                    "data":data_CENTER_MAIN_FUEL,
+                };
+                
+                var option2 = {};
+                option2 = clone(option_base);
+                option2["dataZoom"]["show"] = false;
+                option2["yAxis"]["name"] = "FT";
+                option2["legend"]["data"] = ['BARO_1'];
+                option2["series"][0] = {
+                    name:"BARO_1",
+                    type:"line",
+                    data:data_BARO_1
+                };
+                
+                
+                var option3 = {};
+                option3 = clone(option_base);
+                option3["dataZoom"]["show"] = false;
+                option3["yAxis"]["name"] = "PPH";
+                option3["legend"]["data"] = ['FF_1','FF_2'];
+                option3["series"][0] = {
+                    "name":"FF_1",
+                    "type":"line",
+                    "data":data_FF_1,
+                };
+                option3["series"][1] = {
+                    "name":"FF_2",
+                    "type":"line",
+                    "data":data_FF_2,
+                };
+                
+                echarts_config_option_1 = {
+                    "365:CENTER MAIN FUEL QTY":"scatter",
+                    "363:LT MAIN FUEL QTY":"scatter",
+                    "363:RT MAIN FUEL QTY":"scatter",
+                };
+
+                var myChart1 = echarts.init(document.getElementById('main1'));
+                myChart1.setOption(option1);
+                var myChart2 = echarts.init(document.getElementById('main2'));
+                myChart2.setOption(option2);
+                var myChart3 = echarts.init(document.getElementById('main3'));
+                myChart3.setOption(option3);
+
+                echarts.connect([myChart1,myChart2,myChart3]);
+                
             },
             error: function(){
                 alert("查询失败");
             }
         });
         return false;
-      });
     });
+});
+
+
+function make_chart_option(list_config, post_data, option)
+{
+    //构造option.series
+    
+    for(var series_name in list_config){
+        var option_series_data = new Array()
+        for(var i=0;i<post_data.length;i++){
+            option_series_data.push(post_data[i][series_name]);
+        }
+        var option_series_config = {};
+        option_series_config = {
+            "name": series_name,
+            "type": list_config[series_name],
+            "data": option_series_data,
+        }
+        option["series"].push(option_series_config)
+    }
+}
+
+function clone(obj)
+{
+    var o,i,j,k;
+    if(typeof(obj)!="object" || obj===null)return obj;
+    if(obj instanceof(Array))
+    {
+        o=[];
+        i=0;j=obj.length;
+        for(;i<j;i++)
+        {
+            if(typeof(obj[i])=="object" && obj[i]!=null)
+            {
+                o[i]=arguments.callee(obj[i]);
+            }
+            else
+            {
+                o[i]=obj[i];
+            }
+        }
+    }
+    else
+    {
+        o={};
+        for(i in obj)
+        {
+            if(typeof(obj[i])=="object" && obj[i]!=null)
+            {
+                o[i]=arguments.callee(obj[i]);
+            }
+            else
+            {
+                o[i]=obj[i];
+            }
+        }
+    }
+ 
+    return o;
+}
+
 
 </script>
 
