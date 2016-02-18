@@ -41,7 +41,7 @@ def childtable(request, flight_id):
         result_list.append(single)
 
     return render(request, 'childtable.html', {'json_list': json_list,
-                                                           'stencil_option': result_list})
+                                               'stencil_option': result_list})
 
 def ajax_some_para(request):
     hbase_interface = HBASE_interface()
