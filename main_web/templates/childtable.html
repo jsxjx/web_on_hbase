@@ -171,16 +171,9 @@ $(document).ready(function(){
 
 
                 //对echarts进行设置
-                var data_para_time = new Array();
-                var data_BARO_1 = new Array();
-                var data_LT_MAIN_FUEL = new Array();
-                var data_RT_MAIN_FUEL = new Array();
-                var data_CENTER_MAIN_FUEL = new Array();
-                var data_diff_value = new Array();
-                var data_FF_1 = new Array();
-                var data_FF_2 = new Array();
-
+                               
                 //固定部分，时间的配置，还有母板的基础设置
+                var data_para_time = new Array();
                 var post_data = result;
                 for(var i=0;i<post_data.length;i++){
                     data_para_time.push(post_data[i]["$GMT TIME"]);            
@@ -197,6 +190,7 @@ $(document).ready(function(){
                     dataZoom:{
                         type: 'slider',
                         realtime:false,
+                        show:false,
                         orient:'horizontal',
                         start: 0,
                         end: 100
@@ -215,86 +209,40 @@ $(document).ready(function(){
                     series : []  
                 };
 
-
                 //动态部分，对每张图表的配置
-                for(var i=0;i<post_data.length;i++){
-                    data_BARO_1.push(post_data[i]["69:BARO COR ALT NO. 1"]);
-                    data_CENTER_MAIN_FUEL.push(post_data[i]["365:CENTER MAIN FUEL QTY"]);
-                    data_LT_MAIN_FUEL.push(post_data[i]["363:LT MAIN FUEL QTY"]);
-                    data_RT_MAIN_FUEL.push(post_data[i]["364:RT MAIN FUEL QTY"]);
-                    
-                    //data_diff_value.push(post_data[i].RT_LT);
-                    data_FF_1.push(post_data[i]["250:SELECTED FUEL FLOW #1"]);
-                    data_FF_2.push(post_data[i]["249:SELECTED FUEL FLOW #2"]);
-                };
-                
-                console.log(data_CENTER_MAIN_FUEL);
-
-                var option1 = {};
-                option1 = clone(option_base);
-                console.log(option1)
-                option1["dataZoom"]["show"] = true;
-                option1["yAxis"]["name"] = "LBS";
-                option1["legend"]["data"] = ['LT_MAIN_FUEL','RT_MAIN_FUEL','CENTER_MAIN_FUEL'];
-                option1["series"][0] = {
-                    "name":"LT_MAIN_FUEL",
-                    "type":"scatter",
-                    "data":data_LT_MAIN_FUEL,
-                };
-                option1["series"][1] = {
-                    "name":"RT_MAIN_FUEL",
-                    "type":"scatter",
-                    "data":data_RT_MAIN_FUEL,
-                };
-                option1["series"][2] = {
-                    "name":"CENTER_MAIN_FUEL",
-                    "type":"scatter",
-                    "data":data_CENTER_MAIN_FUEL,
-                };
-                
-                var option2 = {};
-                option2 = clone(option_base);
-                option2["dataZoom"]["show"] = false;
-                option2["yAxis"]["name"] = "FT";
-                option2["legend"]["data"] = ['BARO_1'];
-                option2["series"][0] = {
-                    name:"BARO_1",
-                    type:"line",
-                    data:data_BARO_1
-                };
-                
-                
-                var option3 = {};
-                option3 = clone(option_base);
-                option3["dataZoom"]["show"] = false;
-                option3["yAxis"]["name"] = "PPH";
-                option3["legend"]["data"] = ['FF_1','FF_2'];
-                option3["series"][0] = {
-                    "name":"FF_1",
-                    "type":"line",
-                    "data":data_FF_1,
-                };
-                option3["series"][1] = {
-                    "name":"FF_2",
-                    "type":"line",
-                    "data":data_FF_2,
-                };
-                
-                echarts_config_option_1 = {
-                    "365:CENTER MAIN FUEL QTY":"scatter",
-                    "363:LT MAIN FUEL QTY":"scatter",
-                    "363:RT MAIN FUEL QTY":"scatter",
-                };
-
-                var myChart1 = echarts.init(document.getElementById('main1'));
-                myChart1.setOption(option1);
-                var myChart2 = echarts.init(document.getElementById('main2'));
-                myChart2.setOption(option2);
-                var myChart3 = echarts.init(document.getElementById('main3'));
-                myChart3.setOption(option3);
-
-                echarts.connect([myChart1,myChart2,myChart3]);
-                
+                var echarts_config_option = new Array();
+                echarts_config_option= 
+                [
+                    {
+                        "365:CENTER MAIN FUEL QTY":"scatter",
+                        "363:LT MAIN FUEL QTY":"scatter",
+                        "364:RT MAIN FUEL QTY":"scatter",
+                    },                
+                    {
+                        "69:BARO COR ALT NO. 1":"line",
+                    },
+                    {
+                        "250:SELECTED FUEL FLOW #1":"line",
+                        "249:SELECTED FUEL FLOW #2":"line"
+                    }
+                ];
+                var echart_id_array = new Array();
+                echart_id_array = ['main1', 'main2', 'main3']
+                var myechart_array = new Array();
+                var option_importation = new Array();
+                for (var ec_count = 0; ec_count<echarts_config_option.length;ec_count++)
+                {
+                    option_importation[ec_count] = clone(option_base);
+                    make_chart_option(echarts_config_option[ec_count], post_data, option_importation[ec_count]);
+                    if (ec_count==0)
+                    {
+                        option_importation[0]["dataZoom"]["show"] = true;
+                    }
+                    myechart_array[ec_count] = echarts.init(document.getElementById(echart_id_array[ec_count]));
+                    myechart_array[ec_count].setOption(option_importation[ec_count]);
+                    myechart_array[ec_count].group = 'group1';//设置实例的 group id
+                }
+                echarts.connect('group1');//多个图表实例实现联动
             },
             error: function(){
                 alert("查询失败");
@@ -321,6 +269,7 @@ function make_chart_option(list_config, post_data, option)
             "data": option_series_data,
         }
         option["series"].push(option_series_config)
+        option["legend"]["data"].push(series_name)
     }
 }
 
