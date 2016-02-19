@@ -16,9 +16,9 @@
             </div>
             <input type="submit" value="查询" id="set" class="btn btn-default" />
         </form>
-        <div id="main1" style="height:300px"></div>
-        <div id="main2" style="height:200px"></div>
-        <div id="main3" style="height:200px"></div>
+        <div id="main1" style="height:0px"></div>
+        <div id="main2" style="height:0px"></div>
+        <div id="main3" style="height:0px"></div>
         <table id="table" data-sort-name="stargazers_count" data-sort-order="desc" data-pagination="true" data-page-size="15" data-page-list="[15,30,66,100]" data-show-pagination-switch="true">
 
         </table>
@@ -232,13 +232,19 @@ $(document).ready(function(){
                 var option_importation = new Array();
                 for (var ec_count = 0; ec_count<echarts_config_option.length;ec_count++)
                 {
+                    var echarts_element = document.getElementById(echart_id_array[ec_count]);
                     option_importation[ec_count] = clone(option_base);
                     make_chart_option(echarts_config_option[ec_count], post_data, option_importation[ec_count]);
                     if (ec_count==0)
                     {
                         option_importation[0]["dataZoom"]["show"] = true;
+                        echarts_element.style.height = 300 + 'px';
                     }
-                    myechart_array[ec_count] = echarts.init(document.getElementById(echart_id_array[ec_count]));
+                    else
+                    {
+                        echarts_element.style.height = 200 + 'px';
+                    }
+                    myechart_array[ec_count] = echarts.init(echarts_element);
                     myechart_array[ec_count].setOption(option_importation[ec_count]);
                     myechart_array[ec_count].group = 'group1';//设置实例的 group id
                 }
