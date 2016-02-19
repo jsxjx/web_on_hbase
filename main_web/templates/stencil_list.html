@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block maincontents %}
+<div class="content-section">
+    <div class="container">
+        <h2>航班列表：</h2>
+        
+        <table id="table" data-sort-name="stargazers_count" data-sort-order="desc" data-pagination="true" data-page-size="15" data-page-list="[15,30,66,100]" data-show-pagination-switch="true">
+
+        </table>
+    </div>
+    <!-- /container -->
+</div>
+<!--/.content-section -->
+<script>
+
+
+var $table = $('#table');
+var table_list_json = {{ result_json | safe}}
+$(function() {
+
+    columns_set = [
+            {
+                title: 'index',
+                field: 'index',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },
+            {
+                title: 'ATA',
+                field: 'ATA',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },
+            {
+                title: 'NAME',
+                field: 'NAME',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },
+            {
+                title: '创建者',
+                field: 'creator',
+                align: 'center',
+                valign: 'middle',
+                sortable: true
+            },
+            {
+                title: '进入编辑链接',
+                field: 'index',
+                align: 'center',
+                valign: 'middle',
+                sortable: true,
+                formatter: flightFormatter
+            }
+        ]
+    $table.bootstrapTable({
+                data: table_list_json,
+                columns: columns_set,
+                search: true
+            });
+    
+});
+
+function flightFormatter(value) {
+
+    var the_url;
+
+    the_url = "{% url 'edit_stencil' 112233 %}".replace("112233", value);
+    return [
+        '<a href="' + the_url + '" target="_blank">' + "进入" + '</a>'
+    ].join('');
+}
+
+</script>
+
+{% endblock %}

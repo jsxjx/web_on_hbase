@@ -104,5 +104,21 @@ def ajax_some_para(request):
         list_c1_c2.append(single)
         i = i + 1
 
-    result_json = json.dumps(list_c1_c2)
+    # 传递echarts设置信息
+    echarts_config_option = \
+    [
+        {
+            "365:CENTER MAIN FUEL QTY":"scatter",
+            "363:LT MAIN FUEL QTY":"scatter",
+            "364:RT MAIN FUEL QTY":"scatter",
+        },
+        {
+            "69:BARO COR ALT NO. 1":"line",
+        },
+        {
+            "250:SELECTED FUEL FLOW #1":"line",
+            "249:SELECTED FUEL FLOW #2":"line"
+        }
+    ]
+    result_json = json.dumps([list_c1_c2, echarts_config_option])
     return HttpResponse(result_json)

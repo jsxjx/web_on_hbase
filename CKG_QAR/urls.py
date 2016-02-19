@@ -36,5 +36,8 @@ urlpatterns = [
     url(r'^storing_stencil_ajax/$',
         'main_web.views_stencil.storing_stencil_ajax',
         name = 'storing_stencil_ajax'),
+    #模版编辑，添加图表
+    url(r'^stencil_list/$', 'main_web.views_stencil.stencil_list'),
+    url(r'^edit_stencil/(.+)/$', 'main_web.views_stencil.edit_stencil', name = 'edit_stencil'),
 
 ]

@@ -57,3 +57,28 @@ def storing_stencil_ajax(request):
             '<br>参数512：' + str(para_512_post) + \
            '<br>章节：' + str(ata)
     return HttpResponse(text)
+
+def stencil_list(request):
+    hb_if = HBASE_interface()
+    list_str = LIST_to_STR()
+    table = hb_if.table('stencil_config')
+    tablename = "stencil_config"
+    cf_set = ['c1:NAME',
+              'c1:ATA',
+              'c1:creator',
+              ]
+    result_scan_dict = hb_if.query_table(tablename,cf_set)
+    result_list = []
+    for key, value in result_scan_dict.items():
+        print key, value
+        single = {'index' : key,
+                  'NAME' : value['c1:NAME'],
+                  'ATA':value['c1:ATA'],
+                  'creator':value['c1:creator'],
+                  }
+        result_list.append(single)
+    result_json = json.dumps(result_list)
+    return render(request, 'stencil_list.html',{'result_json': result_json})
+
+def edit_stencil(request):
+    return render(request, 'edit_stencil.html')

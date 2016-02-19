@@ -84,8 +84,9 @@ $(document).ready(function(){
                 $table.bootstrapTable('showLoading');
                 $table.bootstrapTable('load', empty_json);
             },
-            success: function(result, statues, xml){
+            success: function(get_result, statues, xml){
                 $table.bootstrapTable('hideLoading');
+                var result = get_result[0];
                 para_name_list = result[0];                
                 para_unit_dic = result[result.length - 1]                
                 $table.bootstrapTable('destroy');
@@ -210,22 +211,7 @@ $(document).ready(function(){
                 };
 
                 //动态部分，对每张图表的配置
-                var echarts_config_option = new Array();
-                echarts_config_option= 
-                [
-                    {
-                        "365:CENTER MAIN FUEL QTY":"scatter",
-                        "363:LT MAIN FUEL QTY":"scatter",
-                        "364:RT MAIN FUEL QTY":"scatter",
-                    },                
-                    {
-                        "69:BARO COR ALT NO. 1":"line",
-                    },
-                    {
-                        "250:SELECTED FUEL FLOW #1":"line",
-                        "249:SELECTED FUEL FLOW #2":"line"
-                    }
-                ];
+                var echarts_config_option = get_result[1];
                 var echart_id_array = new Array();
                 echart_id_array = ['main1', 'main2', 'main3']
                 var myechart_array = new Array();
