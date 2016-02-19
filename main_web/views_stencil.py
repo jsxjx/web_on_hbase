@@ -80,5 +80,30 @@ def stencil_list(request):
     result_json = json.dumps(result_list)
     return render(request, 'stencil_list.html',{'result_json': result_json})
 
-def edit_stencil(request):
-    return render(request, 'edit_stencil.html')
+def edit_stencil(request, stencil_index_number):
+    hb_if = HBASE_interface()
+    tablename = "stencil_config"
+    table = hb_if.table(tablename)
+    result_scan_dict = table.row(stencil_index_number)
+    print result_scan_dict
+    result_list = [result_scan_dict]
+    result_json = json.dumps(result_list)
+    return render(request, 'edit_stencil.html',{'result_json': result_json})
+
+def stencil_echarts(request):
+    echarts_get_id_list = [
+        'echarts_1_256_line',
+        'echarts_1_256_bar',
+        'echarts_1_256_scatter',
+        'echarts_1_512_line',
+        'echarts_1_512_bar',
+        'echarts_1_512_scatter'
+        ]
+    echarts_get_id_value_list = []
+    for i in range(len(echarts_get_id_list)):
+        echarts_get_id_value_list.append(request.GET[echarts_get_id_list[i]])
+        print echarts_get_id_list[i], echarts_get_id_value_list[i]
+
+
+
+    return HttpResponse("已录入")
