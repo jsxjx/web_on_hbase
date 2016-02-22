@@ -2,6 +2,7 @@
 
 import happybase
 import time
+import csv
 from collections import OrderedDict
 
 class HBASE_interface():
@@ -86,3 +87,25 @@ class LIST_to_STR():
         print u"逗号分割的字符串转换成列表："
         print list_str_to_list
         return list_str_to_list
+
+    def opencsv(self, csv_file_name):
+        #读取csv逻辑参数列表，解码大量逻辑参数
+        f = open(csv_file_name,'rb')
+        reader = csv.reader(f)
+        list_index = []
+        for row in reader:
+            para_id_number = reader.line_num - 1
+            para_id_name = str(para_id_number) + ':' + row[0]
+            list_index.append(para_id_name)
+
+        return list_index
+
+    def make_para_id_list(self):
+        csv_name_list = ['737-3C ALL.csv', '737-7 ALL.csv']
+        list_WQAR256_para_index = []
+        list_WQAR512_para_index = []
+
+        list_WQAR256_para_index = list_WQAR256_para_index + self.opencsv(csv_name_list[0])
+        list_WQAR512_para_index = list_WQAR512_para_index + self.opencsv(csv_name_list[1])
+
+        return list_WQAR256_para_index, list_WQAR512_para_index

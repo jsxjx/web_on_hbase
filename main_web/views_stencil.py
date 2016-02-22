@@ -6,6 +6,7 @@ from hbase_function import LIST_to_STR
 from aircraft_config import AC_WQAR_CONFIG
 import json
 
+
 def storing_stencil(request):
     return render(request, 'storing_stencil_html.html')
 
@@ -82,28 +83,39 @@ def stencil_list(request):
 
 def edit_stencil(request, stencil_index_number):
     hb_if = HBASE_interface()
+    list_str = LIST_to_STR()
     tablename = "stencil_config"
     table = hb_if.table(tablename)
     result_scan_dict = table.row(stencil_index_number)
     print result_scan_dict
     result_list = [result_scan_dict]
     result_json = json.dumps(result_list)
-    return render(request, 'edit_stencil.html',{'result_json': result_json})
+
+    print result_scan_dict['c1:WQAR256_IDC']
+    print result_scan_dict['c1:WQAR512_IDC']
+
+    list_WQAR256_model = list_str.str_to_int(result_scan_dict['c1:WQAR256_IDC'])
+    list_WQAR512_model = list_str.str_to_int(result_scan_dict['c1:WQAR512_IDC'])
+    list_WQAR256_para_index, list_WQAR512_para_index = list_str.make_para_id_list()
+    result_list_256_id = []
+    result_list_512_id = []
+    for each_id_number in list_WQAR256_model:
+        result_list_256_id.append(list_WQAR256_para_index[int(each_id_number)])
+    for each_id_number in list_WQAR512_model:
+        result_list_512_id.append(list_WQAR512_para_index[int(each_id_number)])
+
+    print result_list_256_id,result_list_512_id
+    result_json_256 = json.dumps(result_list_256_id)
+    result_json_512 = json.dumps(result_list_512_id)
+    return render(request, 'edit_stencil.html',{'result_json': result_json,
+                                                'result_json_256':result_list_256_id,
+                                                'result_json_512':result_json_512})
 
 def stencil_echarts(request):
-    echarts_get_id_list = [
-        'echarts_1_256_line',
-        'echarts_1_256_bar',
-        'echarts_1_256_scatter',
-        'echarts_1_512_line',
-        'echarts_1_512_bar',
-        'echarts_1_512_scatter'
-        ]
-    echarts_get_id_value_list = []
-    for i in range(len(echarts_get_id_list)):
-        echarts_get_id_value_list.append(request.GET[echarts_get_id_list[i]])
-        print echarts_get_id_list[i], echarts_get_id_value_list[i]
 
+
+    req = json.loads(request.raw_post_data)
+    print req
 
 
     return HttpResponse("已录入")

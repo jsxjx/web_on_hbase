@@ -39,5 +39,5 @@ urlpatterns = [
     #模版编辑，添加图表
     url(r'^stencil_list/$', 'main_web.views_stencil.stencil_list'),
     url(r'^edit_stencil/(.+)/$', 'main_web.views_stencil.edit_stencil', name = 'edit_stencil'),
-    url(r'^stencil_echarts/$', 'main_web.views_stencil.stencil_echarts'),
+    url(r'^stencil_echarts/$', 'main_web.views_stencil.stencil_echarts', name = 'stencil_echarts'),
 ]

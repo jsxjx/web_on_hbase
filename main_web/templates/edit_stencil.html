@@ -12,53 +12,96 @@
     <div class="container">
         <div class="page-header">
         	<h2>图表设置：</h2>
-    	</div>
-    	<label>参数输入格式：输入参数ID号，只能输入数字和英文逗号，两个参数间以英文逗号分割，最后一个参数不加逗号）
-        <br>示例：1,2,3,4,5,6</label>
-        <h3>表1：</h3>
-        <form action="/stencil_echarts/"  role="form" method="get">
+            <form action="/stencil_echarts/" id="from_echarts">
             <font face="微软雅黑" size="4" color="#000000">
-            <div class=“form-group”>
-                <label>-256</label>
-                <div class="form-inline">
-                    <label>--设为折线的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_256_line" class="form-control" id="echarts_1_256_line" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>
-                <div class="form-inline">
-                    <label>--设为柱状的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_256_bar" class="form-control" id="echarts_1_256_bar" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>
-                <div class="form-inline">
-                    <label>--设为散点的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_256_scatter" class="form-control" id="echarts_1_256_scatter" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>
-                <label>-512</label>
-                <div class="form-inline">
-                    <label>--设为折线的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_512_line" class="form-control" id="echarts_1_512_line" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>
-                <div class="form-inline">
-                    <label>--设为柱状的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_512_bar" class="form-control" id="echarts_1_512_bar" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>
-                <div class="form-inline">
-                    <label>--设为散点的参数</label>
-                    <br>
-                    <input type="text" name="echarts_1_512_scatter" class="form-control" id="echarts_1_512_scatter" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
-                </div>               
-            </div>
-            <input type="submit" value="录入" id="set" class="btn btn-default" />
-        </form>
+                <table class="table">
+                {% for id_para in result_json_256 %}
+                <tr>
+                    <th>
+                        {{ id_para }}
+                    </th>
+                    <th>
+                        第<select id = "{{ id_para }}~" name = "chart_number">
+                        <option value="None" >--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        </select>张表&nbsp;&nbsp;&nbsp;
+                    </th>
+                    <th>
+                        参数类型：
+                        <select id= "{{ id_para }}" name = "chart_type">
+                        <option value="None">--</option>
+                        <option value="line">折线</option>
+                        <option value="bar">柱状</option>
+                        <option value="scatter">散点</option>
+                        </select>
+                    </th>
+                    
+                </tr>
+                {% endfor %}
+                </table>
+                <input  value="录入" id="set" class="btn btn-default" />
+            </font>
+            </form>
+    	</div>
+    	
     </div>
     <!-- /container -->
 </div>
 
 <script>
+$(document).ready(function(){
+    $("#set").click(function(){
+        var WQAR256_to_views = new Array();
+        for (var i=0;i<3;i++)
+        {
+            WQAR256_to_views[i] = new Array;
+        }
+        var chart_number;
+        var option_alone;
+        var x=document.getElementById("from_echarts");
+        for (var i=0;i<x.length;i++)
+        {
+          document.write(x.elements[i].id);
+          document.write(x.elements[i].value);
+          document.write("<br>");
+          if (x.elements[i].value != "None" && x.elements[i].name == "chart_number")
+          {
+            chart_number = x.elements[i].value - 1
+            option_alone = "\"" + x.elements[i+1].id + "\":\"" + x.elements[i+1].value + "\"";
+            WQAR256_to_views[chart_number].push(option_alone);
+          }
+        }
+        var json_str = JSON.stringify(WQAR256_to_views);
+
+        document.write(WQAR256_to_views);
+        $.ajax({
+                    type:"POST",
+                    data: "json_str",
+                    url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+                    cache: false,
+                    dataType: "json",
+                    success: function(result, statues, xml){
+                        $("#result").html(result);                                         //成功时弹出view传回来的结果
+                    },
+                    error: function(){
+                        alert("录入不成功");
+                    }
+                });
+
+    });
+});
+
+
+
+
+
+
+
+
+
+
 
 
 var $table = $('#table');
@@ -103,6 +146,8 @@ $(function() {
             });
     
 });
+
+
 </script>
 
 {% endblock %}
