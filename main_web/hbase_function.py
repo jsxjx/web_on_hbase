@@ -120,12 +120,21 @@ class Echarts_option():
         print list_1
         echarts_config_option = [{},{},{}]
         for index in range(3):
-            list_2 = list_1[index].split(",")
-            print  list_2
-            for item in list_2:
-                print item
-                id_type = item.split("_")
-                print id_type
-                echarts_config_option[index][id_type[0]] = id_type[1]
+            if list_1[index] <> "":
+                list_2 = list_1[index].split(",")
+                print  list_2
+                for item in list_2:
+                    print item
+                    id_type = item.split("_")
+                    print id_type
+                    echarts_config_option[index][id_type[0]] = id_type[1]
+        print echarts_config_option
+        '''
+        #去除列表中空的项--未完成
+        for item_index in range(3):
+            print echarts_config_option[item_index]
+            if not echarts_config_option[item_index] is None:
+                echarts_config_option.pop(item_index)
+        '''
 
         return echarts_config_option

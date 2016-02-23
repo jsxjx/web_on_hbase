@@ -16,12 +16,12 @@
             </div>
             <input type="submit" value="查询" id="set" class="btn btn-default" />
         </form>
+        
+        <table id="table" data-sort-name="stargazers_count" data-sort-order="desc" data-pagination="true" data-page-size="15" data-page-list="[15,30,66,100]" data-show-pagination-switch="true">
+        </table>
         <div id="main1" style="height:0px"></div>
         <div id="main2" style="height:0px"></div>
         <div id="main3" style="height:0px"></div>
-        <table id="table" data-sort-name="stargazers_count" data-sort-order="desc" data-pagination="true" data-page-size="15" data-page-list="[15,30,66,100]" data-show-pagination-switch="true">
-
-        </table>
     </div>
     <!-- /container -->
 </div>
@@ -187,7 +187,7 @@ $(document).ready(function(){
                     tooltip: {
                         trigger: 'axis',
                         show: true,
-                    },                    
+                    },                   
                     dataZoom:{
                         type: 'slider',
                         realtime:false,
@@ -203,6 +203,7 @@ $(document).ready(function(){
                     },
                     yAxis : {
                             type : 'value'
+
                     },
                     legend: {
                             data:[]
@@ -224,11 +225,11 @@ $(document).ready(function(){
                     if (ec_count==0)
                     {
                         option_importation[0]["dataZoom"]["show"] = true;
-                        echarts_element.style.height = 300 + 'px';
+                        echarts_element.style.height = 700 + 'px';
                     }
                     else
                     {
-                        echarts_element.style.height = 200 + 'px';
+                        echarts_element.style.height = 700 + 'px';
                     }
                     myechart_array[ec_count] = echarts.init(echarts_element);
                     myechart_array[ec_count].setOption(option_importation[ec_count]);
@@ -259,6 +260,7 @@ function make_chart_option(list_config, post_data, option)
             "name": series_name,
             "type": list_config[series_name],
             "data": option_series_data,
+            "large": true,
         }
         option["series"].push(option_series_config)
         option["legend"]["data"].push(series_name)

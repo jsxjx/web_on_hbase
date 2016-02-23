@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from hbase_function import HBASE_interface
 from hbase_function import LIST_to_STR
 from aircraft_config import AC_WQAR_CONFIG
+from hbase_function import Echarts_option
 import json
 
 def all_childtable_index_list(request):
@@ -54,7 +55,9 @@ def ajax_some_para(request):
     table_stencil_name = "stencil_config"
     cf_set_stencil = ['c1:WQAR512_IDC',
                       'c1:WQAR256_IDC',
-                      'c1:NAME']
+                      'c1:NAME',
+                      'c1:ECHARTS_256',
+                      'c1:ECHARTS_512']
     result_scan_dict = hbase_interface.query_table(table_stencil_name,cf_set_stencil)
 
     dict_stencil_config = result_scan_dict[post_index]
@@ -62,13 +65,18 @@ def ajax_some_para(request):
     str_WQAR512 = dict_stencil_config['c1:WQAR512_IDC']
     list_WQAR256 = list_str.str_to_int(str_WQAR256)
     list_WQAR512 = list_str.str_to_int(str_WQAR512)
+    #取出echarts option
+    echarts_option_256 = dict_stencil_config['c1:ECHARTS_256']
+    echarts_option_512 = dict_stencil_config['c1:ECHARTS_512']
 
     # 机号构型判断
     ac_wqar_config = AC_WQAR_CONFIG()
     if aircraft_id in ac_wqar_config.WQAR512_SERISE_list:
         model = list_WQAR512
+        str_echarts_option = echarts_option_512
     elif aircraft_id in ac_wqar_config.WQAR256_SERISE_list:
         model = list_WQAR256
+        str_echarts_option = echarts_option_256
     else:
         return HttpResponse("无此机号")
 
@@ -105,20 +113,9 @@ def ajax_some_para(request):
         i = i + 1
 
     # 传递echarts设置信息
-    echarts_config_option = \
-    [
-        {
-            u"365:CENTER MAIN FUEL QTY":u"scatter",
-            u"363:LT MAIN FUEL QTY":u"scatter",
-            u"364:RT MAIN FUEL QTY":u"scatter",
-        },
-        {
-            u"69:BARO COR ALT NO. 1":u"line",
-        },
-        {
-            u"250:SELECTED FUEL FLOW #1":u"line",
-            u"249:SELECTED FUEL FLOW #2":u"line"
-        }
-    ]
+    ec_op = Echarts_option()
+    echarts_config_option = ec_op.str_to_obj(str_echarts_option)
+
+
     result_json = json.dumps([list_c1_c2, echarts_config_option])
     return HttpResponse(result_json)

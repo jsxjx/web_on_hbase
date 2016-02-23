@@ -11,7 +11,7 @@
     </div>
     <div class="container">
         <div class="page-header">
-        	<h2>图表设置：</h2>
+        	<h2>256构型图表设置：</h2>
             <form action="/stencil_echarts/" role="form" id="from_echarts">
             <font face="微软雅黑" size="4" color="#000000">
                 <table class="table">
@@ -41,57 +41,72 @@
                 </tr>
                 {% endfor %}
                 </table>
-                <input  type="submit" value="录入" id="set" class="btn btn-default" />
+        
             </font>
             </form>
-            <p>录入结果: <span id='result'></span></p>
     	</div>
     	
+    </div>
+    <!-- /container -->
+    <div class="container">
+        <div class="page-header">
+            <h2>512构型图表设置：</h2>
+            <form action="/stencil_echarts/" role="form" id="from_echarts_512">
+            <font face="微软雅黑" size="4" color="#000000">
+                <table class="table">
+                {% for id_para in result_json_512 %}
+                <tr>
+                    <th>
+                        {{ id_para }}
+                    </th>
+                    <th>
+                        第<select id = "{{ id_para }}~" name = "chart_number">
+                        <option value="None" >--</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        </select>张表&nbsp;&nbsp;&nbsp;
+                    </th>
+                    <th>
+                        参数类型：
+                        <select id= "{{ id_para }}" name = "chart_type">
+                        <option value="None">--</option>
+                        <option value="line">折线</option>
+                        <option value="bar">柱状</option>
+                        <option value="scatter">散点</option>
+                        </select>
+                    </th>
+                    
+                </tr>
+                {% endfor %}
+                </table>
+                <input   value="录入" id="set_512" class="btn btn-default" />
+            </font>
+            </form>
+            <p>录入结果: <span id='result_512'></span></p>
+        </div>
+        
     </div>
     <!-- /container -->
 </div>
 
 <script>
+var stencil_index_number = {{ stencil_index_number }}
 $(document).ready(function(){
-    $("#set").click(function(){
-        var WQAR256_to_views = new Array();
-        for (var i=0;i<3;i++)
-        {
-            WQAR256_to_views[i] = new Array;
-        }
-        var chart_number;
-        var option_alone;
-        var x=document.getElementById("from_echarts");
-        for (var i=0;i<x.length;i++)
-        {
-          //console.log(x.elements[i].id);
-          //console.log(x.elements[i].value);
-          //console.log("<br>");
-          if (x.elements[i].value != "None" && x.elements[i].name == "chart_number" && x.elements[i + 1].value != "None")
-          {
-            chart_number = x.elements[i].value - 1;
-            option_alone = x.elements[i+1].id + "_" + x.elements[i+1].value;
-            WQAR256_to_views[chart_number].push(option_alone);
-          }
-        }
+    $("#set_512").click(function(){
         
-        console.log(WQAR256_to_views);
-        var post_256_echarts = new Array;
-        for (var i=0;i<3;i++)
-        {
-            post_256_echarts.push(WQAR256_to_views[i].join());
-        }
-        post_string = post_256_echarts.join(";");
-        console.log(post_string);
-
+        post_string_256 = option_to_str("from_echarts")
+        post_string_512 = option_to_str("from_echarts_512")
         $.ajax({
                     type:"GET",
-                    data: {post_str_echarts:post_string,},
+                    data: {stencil_index_number:stencil_index_number,
+                        post_string_256:post_string_256,
+                        post_string_512:post_string_512,},
                     url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
                     dataType: "html",
                     success: function(result, statues, xml){
-                        $("#result").html(result);                                         //成功时弹出view传回来的结果
+                        $("#result_512").html(result);                                         //成功时弹出view传回来的结果
                     },
                     error: function(){
                         alert("录入不成功");
@@ -147,6 +162,39 @@ $(function() {
     
 });
 
+function option_to_str(from_id)
+{
+    var WQAR256_to_views = new Array();
+    for (var i=0;i<3;i++)
+    {
+        WQAR256_to_views[i] = new Array;
+    }
+    var chart_number;
+    var option_alone;
+    var x=document.getElementById(from_id);
+    for (var i=0;i<x.length;i++)
+    {
+      //console.log(x.elements[i].id);
+      //console.log(x.elements[i].value);
+      //console.log("<br>");
+      if (x.elements[i].value != "None" && x.elements[i].name == "chart_number" && x.elements[i + 1].value != "None")
+      {
+        chart_number = x.elements[i].value - 1;
+        option_alone = x.elements[i+1].id + "_" + x.elements[i+1].value;
+        WQAR256_to_views[chart_number].push(option_alone);
+      }
+    }
+    
+    console.log(WQAR256_to_views);
+    var post_256_echarts = new Array;
+    for (var i=0;i<3;i++)
+    {
+        post_256_echarts.push(WQAR256_to_views[i].join());
+    }
+    post_string = post_256_echarts.join(";");
+    console.log(post_string);
+    return post_string;
+}
 
 </script>
 

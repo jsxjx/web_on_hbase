@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from hbase_function import HBASE_interface
 from hbase_function import LIST_to_STR
-from hbase_function import Echarts_option
 from aircraft_config import AC_WQAR_CONFIG
 import json
 
@@ -17,8 +16,10 @@ def storing_stencil_ajax(request):
     name = request.GET.get('stencil_name', None)
     para_256 = request.GET.get('stencil_256_para', None)
     para_512 = request.GET.get('stencil_512_para', None)
+    creator = request.GET.get('stencil_creator', None)
     #对传入进行解码
     name_decode = name.encode('utf-8')
+    creator_decode = name.encode('utf-8')
     para_256_decode = para_256.split(',')
     para_512_decode = para_512.split(',')
     #防输错设计，前端多输入了，号，列表中有空值即去掉
@@ -41,7 +42,10 @@ def storing_stencil_ajax(request):
     dict_cf_data = {'c1:NAME': str_stencil_name,
                     'c1:WQAR512_IDC': str_para_512,
                     'c1:WQAR256_IDC': str_para_256,
-                    'c1:ATA': ata}
+                    'c1:ATA': ata,
+                    'c1:creator':creator_decode,
+                    'c1:ECHARTS_256':';;',
+                    'c1:ECHARTS_512':';;'}
 
     cf_set = ['c1:NAME']
     dict = hb_if.query_table('stencil_config', cf_set)
@@ -106,21 +110,29 @@ def edit_stencil(request, stencil_index_number):
         result_list_512_id.append(list_WQAR512_para_index[int(each_id_number)])
 
     print result_list_256_id,result_list_512_id
-    result_json_256 = json.dumps(result_list_256_id)
-    result_json_512 = json.dumps(result_list_512_id)
+
     return render(request, 'edit_stencil.html',{'result_json': result_json,
                                                 'result_json_256':result_list_256_id,
-                                                'result_json_512':result_json_512})
+                                                'result_json_512':result_list_512_id,
+                                                'stencil_index_number':stencil_index_number})
 
 def stencil_echarts(request):
 
+    stencil_index_number = request.GET.get('stencil_index_number', None)
+    post_string_256 = request.GET.get('post_string_256', None)
+    post_string_512 = request.GET.get('post_string_512', None)
+    rowkey = (str(stencil_index_number)).zfill(3)
+    print rowkey
+    hb_if = HBASE_interface()
+    list_str = LIST_to_STR()
+    table = hb_if.table('stencil_config')
+    dict_cf_data = {'c1:ECHARTS_256': post_string_256,
+                    'c1:ECHARTS_512': post_string_512
+                    }
+    table.put(rowkey, dict_cf_data)
 
-    str_echarts = request.GET.get('post_str_echarts', None)
-    print str_echarts
 
-    ec_op = Echarts_option()
-    option_object = ec_op.str_to_obj(str_echarts)
-    print option_object
+
 
 
     return HttpResponse("已录入")

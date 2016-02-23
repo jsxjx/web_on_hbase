@@ -37,6 +37,8 @@
                             <label>512构型参数列表（输入参数ID号，只能输入数字和英文逗号，两个参数间以英文逗号分割，最后一个参数不加逗号）
                             <br>示例：1,2,3,4,5,6</label>
                             <input type="text" name="list_para" class="form-control" id="id_512_stencil_para" onkeyup="this.value=this.value.replace(/[^\d|,]/g,'')" onafterpaste="this.value=this.value.replace(/[^\d|,]/g,'')"/>
+                            <label>创建者</label><br>
+                            <input type="text" name="stencil_name" id="id_stencil_creator" class="form-control" />
                         </div>
                     </div>
                     <input type="submit" value="录入" id="set" class="btn btn-default" />
@@ -59,6 +61,7 @@
         var stencil_ATA = $("#id_stencil_ATA").val();
  		var stencil_256_para = $("#id_256_stencil_para").val();
  		var stencil_512_para = $("#id_512_stencil_para").val();
+        var stencil_creator = $("#id_stencil_creator").val();
         if (stencil_name==''||stencil_ATA==''||stencil_256_para==''||stencil_512_para==''){
             alert("信息不完整，请输入所有信息");
             return false;
@@ -68,7 +71,9 @@
 
         $.ajax({
                     type:"GET",
-                    data: {stencil_name:stencil_name,stencil_256_para:stencil_256_para,stencil_ATA:stencil_ATA,stencil_512_para:stencil_512_para,},
+                    data: {stencil_name:stencil_name,stencil_256_para:stencil_256_para,stencil_ATA:stencil_ATA,
+                        stencil_512_para:stencil_512_para,
+                        stencil_creator:stencil_creator},
                     url: "{% url 'storing_stencil_ajax' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
                     dataType: "html",
