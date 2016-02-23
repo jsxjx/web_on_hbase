@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from hbase_function import HBASE_interface
 from hbase_function import LIST_to_STR
+from hbase_function import Echarts_option
 from aircraft_config import AC_WQAR_CONFIG
 import json
 
@@ -116,9 +117,10 @@ def stencil_echarts(request):
 
     str_echarts = request.GET.get('post_str_echarts', None)
     print str_echarts
-    list_echarts_1 = str_echarts.split(";")
-    print list_echarts_1
-    
+
+    ec_op = Echarts_option()
+    option_object = ec_op.str_to_obj(str_echarts)
+    print option_object
 
 
     return HttpResponse("已录入")

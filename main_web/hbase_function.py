@@ -109,3 +109,23 @@ class LIST_to_STR():
         list_WQAR512_para_index = list_WQAR512_para_index + self.opencsv(csv_name_list[1])
 
         return list_WQAR256_para_index, list_WQAR512_para_index
+
+class Echarts_option():
+
+    def __init__(self):
+        pass
+
+    def str_to_obj(self, option_string):
+        list_1 = option_string.split(";")
+        print list_1
+        echarts_config_option = [{},{},{}]
+        for index in range(3):
+            list_2 = list_1[index].split(",")
+            print  list_2
+            for item in list_2:
+                print item
+                id_type = item.split("_")
+                print id_type
+                echarts_config_option[index][id_type[0]] = id_type[1]
+
+        return echarts_config_option

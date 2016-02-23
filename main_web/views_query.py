@@ -108,16 +108,16 @@ def ajax_some_para(request):
     echarts_config_option = \
     [
         {
-            "365:CENTER MAIN FUEL QTY":"scatter",
-            "363:LT MAIN FUEL QTY":"scatter",
-            "364:RT MAIN FUEL QTY":"scatter",
+            u"365:CENTER MAIN FUEL QTY":u"scatter",
+            u"363:LT MAIN FUEL QTY":u"scatter",
+            u"364:RT MAIN FUEL QTY":u"scatter",
         },
         {
-            "69:BARO COR ALT NO. 1":"line",
+            u"69:BARO COR ALT NO. 1":u"line",
         },
         {
-            "250:SELECTED FUEL FLOW #1":"line",
-            "249:SELECTED FUEL FLOW #2":"line"
+            u"250:SELECTED FUEL FLOW #1":u"line",
+            u"249:SELECTED FUEL FLOW #2":u"line"
         }
     ]
     result_json = json.dumps([list_c1_c2, echarts_config_option])
