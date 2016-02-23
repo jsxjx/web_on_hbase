@@ -114,8 +114,11 @@ def edit_stencil(request, stencil_index_number):
 def stencil_echarts(request):
 
 
-    req = json.loads(request.raw_post_data)
-    print req
+    str_echarts = request.GET.get('post_str_echarts', None)
+    print str_echarts
+    list_echarts_1 = str_echarts.split(";")
+    print list_echarts_1
+    
 
 
     return HttpResponse("已录入")

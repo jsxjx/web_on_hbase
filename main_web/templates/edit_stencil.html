@@ -12,7 +12,7 @@
     <div class="container">
         <div class="page-header">
         	<h2>图表设置：</h2>
-            <form action="/stencil_echarts/" id="from_echarts">
+            <form action="/stencil_echarts/" role="form" id="from_echarts">
             <font face="微软雅黑" size="4" color="#000000">
                 <table class="table">
                 {% for id_para in result_json_256 %}
@@ -41,9 +41,10 @@
                 </tr>
                 {% endfor %}
                 </table>
-                <input  value="录入" id="set" class="btn btn-default" />
+                <input  type="submit" value="录入" id="set" class="btn btn-default" />
             </font>
             </form>
+            <p>录入结果: <span id='result'></span></p>
     	</div>
     	
     </div>
@@ -63,25 +64,32 @@ $(document).ready(function(){
         var x=document.getElementById("from_echarts");
         for (var i=0;i<x.length;i++)
         {
-          document.write(x.elements[i].id);
-          document.write(x.elements[i].value);
-          document.write("<br>");
-          if (x.elements[i].value != "None" && x.elements[i].name == "chart_number")
+          //console.log(x.elements[i].id);
+          //console.log(x.elements[i].value);
+          //console.log("<br>");
+          if (x.elements[i].value != "None" && x.elements[i].name == "chart_number" && x.elements[i + 1].value != "None")
           {
-            chart_number = x.elements[i].value - 1
-            option_alone = "\"" + x.elements[i+1].id + "\":\"" + x.elements[i+1].value + "\"";
+            chart_number = x.elements[i].value - 1;
+            option_alone = x.elements[i+1].id + "_" + x.elements[i+1].value;
             WQAR256_to_views[chart_number].push(option_alone);
           }
         }
-        var json_str = JSON.stringify(WQAR256_to_views);
+        
+        console.log(WQAR256_to_views);
+        var post_256_echarts = new Array;
+        for (var i=0;i<3;i++)
+        {
+            post_256_echarts.push(WQAR256_to_views[i].join());
+        }
+        post_string = post_256_echarts.join(";");
+        console.log(post_string);
 
-        document.write(WQAR256_to_views);
         $.ajax({
-                    type:"POST",
-                    data: "json_str",
+                    type:"GET",
+                    data: {post_str_echarts:post_string,},
                     url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
                     cache: false,
-                    dataType: "json",
+                    dataType: "html",
                     success: function(result, statues, xml){
                         $("#result").html(result);                                         //成功时弹出view传回来的结果
                     },
@@ -89,17 +97,9 @@ $(document).ready(function(){
                         alert("录入不成功");
                     }
                 });
-
+                return false;
     });
 });
-
-
-
-
-
-
-
-
 
 
 
