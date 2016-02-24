@@ -138,3 +138,23 @@ class Echarts_option():
         '''
 
         return echarts_config_option
+
+    def judge_logic_echart(self, list_option):
+        list_echart_index_of_logic = []
+        list_to_str = LIST_to_STR()
+        list_WQAR256_para_index, list_WQAR512_para_index = list_to_str.make_para_id_list()
+        for index in range(3):
+
+            for key, value in list_option[index].items():
+                print "key,value"
+                print key,value
+                if key in list_WQAR512_para_index:
+                    if list_WQAR512_para_index.index(key) >= 796:
+                        list_echart_index_of_logic.append(index)
+                        break
+                elif key in list_WQAR256_para_index:
+                    if list_WQAR256_para_index.index(key) >= 644:
+                        list_echart_index_of_logic.append(index)
+                        break
+
+        return list_echart_index_of_logic

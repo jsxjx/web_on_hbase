@@ -115,7 +115,9 @@ def ajax_some_para(request):
     # 传递echarts设置信息
     ec_op = Echarts_option()
     echarts_config_option = ec_op.str_to_obj(str_echarts_option)
+    # 得出echarts_option中的逻辑值参数表列表
+    list_index_of_logic_echarts = ec_op.judge_logic_echart(echarts_config_option)
 
 
-    result_json = json.dumps([list_c1_c2, echarts_config_option])
+    result_json = json.dumps([list_c1_c2, echarts_config_option, list_index_of_logic_echarts])
     return HttpResponse(result_json)

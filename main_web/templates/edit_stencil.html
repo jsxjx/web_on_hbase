@@ -98,20 +98,20 @@ $(document).ready(function(){
         post_string_256 = option_to_str("from_echarts")
         post_string_512 = option_to_str("from_echarts_512")
         $.ajax({
-                    type:"GET",
-                    data: {stencil_index_number:stencil_index_number,
-                        post_string_256:post_string_256,
-                        post_string_512:post_string_512,},
-                    url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
-                    cache: false,
-                    dataType: "html",
-                    success: function(result, statues, xml){
-                        $("#result_512").html(result);                                         //成功时弹出view传回来的结果
-                    },
-                    error: function(){
-                        alert("录入不成功");
-                    }
-                });
+            type:"GET",
+            data: {stencil_index_number:stencil_index_number,
+                post_string_256:post_string_256,
+                post_string_512:post_string_512,},
+            url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
+            cache: false,
+            dataType: "html",
+            success: function(result, statues, xml){
+                $("#result_512").html(result);                                         //成功时弹出view传回来的结果
+            },
+            error: function(){
+                alert("录入不成功");
+            }
+        });
                 return false;
     });
 });

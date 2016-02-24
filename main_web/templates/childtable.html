@@ -191,7 +191,7 @@ $(document).ready(function(){
                     dataZoom:{
                         type: 'slider',
                         realtime:false,
-                        show:false,
+                        show:true,
                         orient:'horizontal',
                         start: 0,
                         end: 100
@@ -217,20 +217,37 @@ $(document).ready(function(){
                 echart_id_array = ['main1', 'main2', 'main3']
                 var myechart_array = new Array();
                 var option_importation = new Array();
+                //获取包含逻辑值参数表名的列表
+                var list_index_of_echarts_logic = get_result[2];
                 for (var ec_count = 0; ec_count<echarts_config_option.length;ec_count++)
                 {
                     var echarts_element = document.getElementById(echart_id_array[ec_count]);
                     option_importation[ec_count] = clone(option_base);
-                    make_chart_option(echarts_config_option[ec_count], post_data, option_importation[ec_count]);
+                    //判断是否属于逻辑值的参数列表
+                    var jude_number = list_index_of_echarts_logic.indexOf(ec_count)
+                    if (jude_number == -1)
+                    {
+                        make_chart_option(echarts_config_option[ec_count], post_data, option_importation[ec_count]);
+                    }
+                    else
+                    {
+                        make_logic_chart_option(echarts_config_option[ec_count], post_data, option_importation[ec_count]);
+                    }
+                    
+
+                    //对三个表的高度和区间控件设置
                     if (ec_count==0)
                     {
-                        option_importation[0]["dataZoom"]["show"] = true;
+                        option_importation[ec_count]["dataZoom"]["show"] = true;
                         echarts_element.style.height = 700 + 'px';
                     }
                     else
                     {
+                        option_importation[ec_count]["dataZoom"]["show"] = true;
                         echarts_element.style.height = 700 + 'px';
                     }
+                    
+                    //加载实例
                     myechart_array[ec_count] = echarts.init(echarts_element);
                     myechart_array[ec_count].setOption(option_importation[ec_count]);
                     myechart_array[ec_count].group = 'group1';//设置实例的 group id
@@ -262,9 +279,57 @@ function make_chart_option(list_config, post_data, option)
             "data": option_series_data,
             "large": true,
         }
-        option["series"].push(option_series_config)
-        option["legend"]["data"].push(series_name)
+        option["series"].push(option_series_config);
+        option["legend"]["data"].push(series_name);
     }
+}
+
+function make_logic_chart_option(list_config, post_data, option)
+{
+    option["yAxis"]["type"] = "category";
+
+    //构造[yAxis][data]
+    var hash = {};
+    var list_yaxis_legend = new Array();
+    for(var series_name in list_config){
+        var option_series_data = new Array();
+        for(var i=0;i<post_data.length;i++){
+            option_series_data.push(post_data[i][series_name]);
+        }
+        for (var i=0; i<option_series_data.length;i++){
+            var elem = option_series_data[i];
+            if(!hash[elem])
+            {
+                hash[elem] = (Object.keys(hash)).length + 1;
+                list_yaxis_legend.push(elem);
+            }
+        }
+    }
+    console.log(hash);
+    option["yAxis"]["data"] = list_yaxis_legend;
+    console.log(list_yaxis_legend);
+    //对data改造成符合y轴目录
+    for(var series_name in list_config)
+    {
+        var option_series_data = new Array();
+        for(var i=0;i<post_data.length;i++){
+            var para_value = post_data[i][series_name];
+            option_series_data.push([i, hash[para_value] - 1]);
+        }
+        var option_series_config = {};
+        option_series_config = {
+            "name": series_name,
+            "type": list_config[series_name],
+            "data": option_series_data,
+            "large": true,
+        }
+        option["series"].push(option_series_config);
+        option["legend"]["data"].push(series_name);
+    }
+
+
+    option["tooltip"]["formatter"] = '{b}'
+
 }
 
 function clone(obj)
