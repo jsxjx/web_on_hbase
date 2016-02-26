@@ -36,6 +36,7 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
 
     # 按python list 标号从零开始改为从一开始，以符合数据库设计
     counter_list_columns_app_1 = counter_list_columns + 1
+    put_table_data = []
     for i in range(0, counter_list_all_para):
         #print u"第 %s 行"%i
 
@@ -50,8 +51,9 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
             str_value = str(list_all_para_turn[i][j-1]) #对应在list中的下标要减一
             dic_j['c1:'+ str(j)] = str_value
 
-        table.put(str_i, dic_j)
+        put_table_data.append([str_i, dic_j])
 
+    put_data(file[0:21], put_table_data)
     #b.send()
     #进行GMT的处理
     second_storing = Second_Storing()
@@ -59,3 +61,60 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
 
     happybase_end_time = time.clock()
     print u"存入耗时： %s"%(happybase_end_time - happybase_start_time)
+
+
+pool = happybase.ConnectionPool(size=66,
+                                host='10.210.180.43',
+                                port=9090,
+                                timeout = None,
+                                autoconnect=True,
+                                compat='0.94',)
+from multiprocessing import Pool
+import os, time, random
+def put_data(table_name, list_put_table_data):
+
+    cut_number = 4
+    list_cut = div_list(list_put_table_data, cut_number)
+    print list_cut[0][0][0], list_cut[0][-1][0]
+    print list_cut[1][0][0], list_cut[1][-1][0]
+    p = Pool()
+    for i in range(cut_number):
+        p.apply_async(threading_put_data, args=(table_name, list_cut[i]))
+    print 'Waiting for all subprocesses done...'
+    p.close()
+    p.join()
+    print 'All subprocesses done.'
+
+
+def threading_put_data(table_name, list_put_table_data):
+    connection = happybase.Connection(host='10.210.180.43',
+                                     port=9090,
+                                     timeout = None,
+                                     autoconnect=True,
+                                     compat='0.94',
+                                     )
+    table = connection.table(table_name)
+    for i in range(0, len(list_put_table_data)):
+        table.put(list_put_table_data[i][0], list_put_table_data[i][1])
+
+def div_list(ls,n):
+    if not isinstance(ls,list) or not isinstance(n,int):
+        return []
+    ls_len = len(ls)
+    if n<=0 or 0==ls_len:
+        return []
+    if n > ls_len:
+        return []
+    elif n == ls_len:
+        return [[i] for i in ls]
+    else:
+        j = ls_len/n
+        k = ls_len%n
+        ### j,j,j,...(前面有n-1个j),j+k
+        #步长j,次数n-1
+        ls_return = []
+        for i in xrange(0,(n-1)*j,j):
+            ls_return.append(ls[i:i+j])
+        #算上末尾的j+k
+        ls_return.append(ls[(n-1)*j:])
+        return ls_return
