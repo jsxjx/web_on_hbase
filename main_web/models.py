@@ -1,4 +1,4 @@
-﻿# coding:utf-8
+# coding:utf-8
 from django.db import models
 
 # Create your models here.
@@ -23,8 +23,10 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
     dic_table_info = {'c1:Aircraft_Identification': pro_Aircraft_Identification,
                       'c1:updata_Date': pro_updata_Date,
                       'c1:updata_Time':pro_updata_Time}
-    table_tablename_index.put(file[0:21], dic_table_info)
 
+    table_tablename_index.put(file[0:21], dic_table_info)
+    # 测试速度时用
+    hbase_interface.delete_table(file[0:21])
     #建立分表，并向分表中插入数据
     hbase_interface.create_table(file[0:21])
     table = connection.table(file[0:21])
@@ -55,7 +57,7 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
 
     print u"%s 开始HBASE插入" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
     start_put_time = datetime.datetime.now()
-    put_data(file[0:21], put_table_data)
+    put_data(file[0:21], put_table_data, counter_list_all_para)
     end_put_time = datetime.datetime.now()
     print u"%s 结束HBASE插入" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
     print u"插入耗时： %s s" %((end_put_time - start_put_time).seconds)
@@ -67,8 +69,7 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
     happybase_end_time = datetime.datetime.now()
     #print u"存入耗时： %s"%((happybase_end_time - happybase_start_time).seconds)
 
-    table_tablename_index.delete(row=file[0:21])
-    hbase_interface.delete_table(file[0:21])
+
 
 pool = happybase.ConnectionPool(size=66,
                                 host='10.210.180.43',
@@ -78,9 +79,11 @@ pool = happybase.ConnectionPool(size=66,
                                 compat='0.94',)
 from multiprocessing import Pool
 import os, time, random
-def put_data(table_name, list_put_table_data):
+def put_data(table_name, list_put_table_data, counter_list_all_para):
 
-    cut_number = 10
+    cut_number = (counter_list_all_para//74) + 1
+    #cut_number = 1
+    print "进程数： %s" % cut_number
     list_cut = div_list(list_put_table_data, cut_number)
     print list_cut[0][0][0], list_cut[0][-1][0]
     #print list_cut[1][0][0], list_cut[1][-1][0]
