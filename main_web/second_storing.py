@@ -12,26 +12,26 @@ class Second_Storing:
         self.ac_config = AC_WQAR_CONFIG()
         pass
 
-    def merge_GMT_time(self):
+    def merge_GMT_time(self, table_name):
         GMT_model_256 = [89, 90, 91]
         GMT_model_512 = [96, 97, 98]
         hb_if = self.hb_if
         list_str = self.list_str
         ac_config = self.ac_config
-        for table_name in hb_if.list_query_tablenames():
-            # 飞机构型判断
-            ac_number = table_name[0:6]
-            if ac_number in ac_config.WQAR256_SERISE_list:
-                model = GMT_model_256
-            elif ac_number in ac_config.WQAR512_SERISE_list:
-                model = GMT_model_512
-            else:
-                print '无此机号：' + table_name[0:6]
-                return
-            #连接数据库中的表
-            table = hb_if.table(table_name)
-            self.GMT_storing_to_c2(table_name, model)
-            print table_name, table
+
+        # 飞机构型判断
+        ac_number = table_name[0:6]
+        if ac_number in ac_config.WQAR256_SERISE_list:
+            model = GMT_model_256
+        elif ac_number in ac_config.WQAR512_SERISE_list:
+            model = GMT_model_512
+        else:
+            print '无此机号：' + table_name[0:6]
+            return
+        #连接数据库中的表
+        table = hb_if.table(table_name)
+        self.GMT_storing_to_c2(table_name, model)
+        print table_name, table
 
 
     def GMT_storing_to_c2(self, table_name, model):

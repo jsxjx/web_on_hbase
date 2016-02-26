@@ -5,6 +5,7 @@ from django.db import models
 import happybase
 import time
 from hbase_function import HBASE_interface
+from second_storing import Second_Storing
 
 def save_decode_list_to_hbase(list_all_para_turn, file):
     hbase_interface = HBASE_interface()
@@ -52,6 +53,9 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
         table.put(str_i, dic_j)
 
     #b.send()
+    #进行GMT的处理
+    second_storing = Second_Storing()
+    second_storing.merge_GMT_time(file[0:21])
 
     happybase_end_time = time.clock()
     print u"存入耗时： %s"%(happybase_end_time - happybase_start_time)
