@@ -1,9 +1,9 @@
-# coding:utf-8
+﻿# coding:utf-8
 from django.db import models
 
 # Create your models here.
 import happybase
-import time
+import time,datetime
 from hbase_function import HBASE_interface
 from second_storing import Second_Storing
 
@@ -29,7 +29,7 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
     hbase_interface.create_table(file[0:21])
     table = connection.table(file[0:21])
     print table
-    happybase_start_time = time.clock()
+    happybase_start_time = datetime.datetime.now()
     b = table.batch()
     counter_list_all_para = len(list_all_para_turn)
     counter_list_columns = len(list_all_para_turn[0])
@@ -53,15 +53,22 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
 
         put_table_data.append([str_i, dic_j])
 
+    print u"%s 开始HBASE插入" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    start_put_time = datetime.datetime.now()
     put_data(file[0:21], put_table_data)
+    end_put_time = datetime.datetime.now()
+    print u"%s 结束HBASE插入" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    print u"插入耗时： %s s" %((end_put_time - start_put_time).seconds)
     #b.send()
     #进行GMT的处理
     second_storing = Second_Storing()
     second_storing.merge_GMT_time(file[0:21])
 
-    happybase_end_time = time.clock()
-    print u"存入耗时： %s"%(happybase_end_time - happybase_start_time)
+    happybase_end_time = datetime.datetime.now()
+    #print u"存入耗时： %s"%((happybase_end_time - happybase_start_time).seconds)
 
+    table_tablename_index.delete(row=file[0:21])
+    hbase_interface.delete_table(file[0:21])
 
 pool = happybase.ConnectionPool(size=66,
                                 host='10.210.180.43',
@@ -73,10 +80,10 @@ from multiprocessing import Pool
 import os, time, random
 def put_data(table_name, list_put_table_data):
 
-    cut_number = 4
+    cut_number = 10
     list_cut = div_list(list_put_table_data, cut_number)
     print list_cut[0][0][0], list_cut[0][-1][0]
-    print list_cut[1][0][0], list_cut[1][-1][0]
+    #print list_cut[1][0][0], list_cut[1][-1][0]
     p = Pool()
     for i in range(cut_number):
         p.apply_async(threading_put_data, args=(table_name, list_cut[i]))

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from decode_all_function import MERGE_DECODE_LIST
 from models import save_decode_list_to_hbase
 
-import time
+import time,datetime
 import socket
 
 def home(request):
@@ -13,7 +13,8 @@ def home(request):
 
 def storing_data(request):
 
-    allstarttime = time.clock()
+    print u"%s 开始HBASE译码" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    allstarttime = datetime.datetime.now()
     decode_list = MERGE_DECODE_LIST()
 
     computer_name = socket.getfqdn(socket.gethostname())
@@ -26,7 +27,7 @@ def storing_data(request):
     decode_list.all_decode_list(dir_path, save_decode_list_to_hbase)
     #decode_list.all_decode_list(dir_path, decode_list.save_to_csv)
 
-    allendtime = time.clock()
-    print u"全参数译码总耗时：%s" % (allendtime - allstarttime)
-
+    allendtime = datetime.datetime.now()
+    print u"%s 结束HBASE译码" % time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    print u"总耗时 %s s" %((allendtime - allstarttime).seconds)
     return HttpResponse("已完成数据存入")
