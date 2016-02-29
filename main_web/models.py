@@ -26,7 +26,7 @@ def save_decode_list_to_hbase(list_all_para_turn, file):
 
     table_tablename_index.put(file[0:21], dic_table_info)
     # 测试速度时用
-    hbase_interface.delete_table(file[0:21])
+    #hbase_interface.delete_table(file[0:21])
     #建立分表，并向分表中插入数据
     hbase_interface.create_table(file[0:21])
     table = connection.table(file[0:21])
