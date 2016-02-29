@@ -19,7 +19,7 @@ def storing_stencil_ajax(request):
     creator = request.GET.get('stencil_creator', None)
     #对传入进行解码
     name_decode = name.encode('utf-8')
-    creator_decode = name.encode('utf-8')
+    creator_decode = creator.encode('utf-8')
     para_256_decode = para_256.split(',')
     para_512_decode = para_512.split(',')
     #防输错设计，前端多输入了，号，列表中有空值即去掉
