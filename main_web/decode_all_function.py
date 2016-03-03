@@ -108,7 +108,7 @@ class WQAR_DECODE():
         Remove_MSB = 2 ** (ICD_MSB - ICD_LSB + 1) -1
         int_word1 = int_word1 & Remove_MSB
         result = 1
-        if ICD_ONE_LOGIC <> "CODED":
+        if ICD_ONE_LOGIC <> ICD_ZERO_LOGIC:
             if int_word1 == 1:
                 result = ICD_ONE_LOGIC
             elif int_word1 == 0:
