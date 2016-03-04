@@ -278,6 +278,7 @@ function make_chart_option(list_config, post_data, option)
             "type": list_config[series_name],
             "data": option_series_data,
             "large": true,
+            "sampling":'average'
         }
         option["series"].push(option_series_config);
         option["legend"]["data"].push(series_name);
