@@ -192,9 +192,9 @@ class MERGE_DECODE_LIST():
         #对参数ID号统一排序
         if num_logic == "logic":
             if plane_config == 256 :
-                para_id_number = 645
+                para_id_number = 475
             else:
-                para_id_number = 797
+                para_id_number = 633
         else:
             para_id_number = 1
 
