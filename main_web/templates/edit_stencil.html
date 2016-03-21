@@ -91,7 +91,6 @@
 </div>
 
 <script>
-var stencil_index_number = {{ stencil_index_number }}
 $(document).ready(function(){
     $("#set_512").click(function(){
         
@@ -99,7 +98,7 @@ $(document).ready(function(){
         post_string_512 = option_to_str("from_echarts_512")
         $.ajax({
             type:"GET",
-            data: {stencil_index_number:stencil_index_number,
+            data: {stencil_index_number:"{{ stencil_index_number }}",
                 post_string_256:post_string_256,
                 post_string_512:post_string_512,},
             url: "{% url 'stencil_echarts' %}", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致
